@@ -16,17 +16,6 @@ namespace FoodAppG4.Data
             // if (user0_del != null)
             //     userManager.DeleteAsync(user0_del);
 
-            // var user1_del = userManager.FindByNameAsync("Admin2@localhost").Result;
-            // if (user1_del != null)
-            //     userManager.DeleteAsync(user1_del);
-
-            // var user2_del = userManager.FindByNameAsync("test@localhost").Result;
-            // if (user2_del != null)
-            //     userManager.DeleteAsync(user2_del);
-
-            // var user3_del = userManager.FindByNameAsync("test@test.com").Result;
-            // if (user3_del != null)
-            //     userManager.DeleteAsync(user3_del);
 
 
             // Add Admin User
@@ -133,6 +122,26 @@ namespace FoodAppG4.Data
                     if (!claimAdded.Succeeded)
                     {
                         throw new Exception("Failed to add claim to cyclist user");
+                    }
+                }
+            }
+
+            // Add Cyclist User
+            const string noRightsEmail = "noRights@localhost";
+            const string noRightsPassword = "Secret7$";
+            if (userManager.FindByNameAsync(noRightsEmail).Result == null)
+            {
+                var user3 = new ApiUser();
+                user3.UserName = noRightsEmail;
+                user3.Email = noRightsEmail;
+                user3.EmailConfirmed = true;
+                IdentityResult result3 = userManager.CreateAsync(user3, noRightsPassword).Result;
+                if (result3.Succeeded)
+                {
+                    var cyclistUser = userManager.FindByNameAsync(noRightsEmail).Result;
+                    if (cyclistUser == null)
+                    {
+                        throw new Exception("Failed to find noRights user");
                     }
                 }
             }
