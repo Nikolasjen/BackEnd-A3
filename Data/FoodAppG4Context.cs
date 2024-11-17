@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using FoodAppG4.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace FoodAppG4.Data;
 
-public partial class FoodAppG4Context : DbContext
+public partial class FoodAppG4Context : IdentityDbContext<ApiUser>
 {
-    public FoodAppG4Context()
-    {
-    }
+    // public FoodAppG4Context()
+    // {
+    // }
 
     public FoodAppG4Context(DbContextOptions<FoodAppG4Context> options)
         : base(options)
@@ -17,25 +18,16 @@ public partial class FoodAppG4Context : DbContext
     }
 
     public virtual DbSet<Cook> Cooks { get; set; }
-
     public virtual DbSet<Customer> Customers { get; set; }
-
     public virtual DbSet<Cyclist> Cyclists { get; set; }
-
     public virtual DbSet<Dish> Dishes { get; set; }
-
     public virtual DbSet<Order> Orders { get; set; }
-
     public virtual DbSet<OrderDetail> OrderDetails { get; set; }
-
     public virtual DbSet<Rating> Ratings { get; set; }
-
     public virtual DbSet<Salary> Salaries { get; set; }
-
     public virtual DbSet<Trip> Trips { get; set; }
-
     public virtual DbSet<TripStop> TripStops { get; set; }
-
+    public virtual DbSet<ApiUser> ApiUsers { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlServer("Data Source=127.0.0.1,1433;Database=FoodApp_G4;User Id=sa;Password=G4_BadPassword;TrustServerCertificate=True");
@@ -44,6 +36,8 @@ public partial class FoodAppG4Context : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
         // Seed data for Cooks
         modelBuilder.Entity<Cook>().HasData(
             new Cook { CookId = 1, Name = "Noah", Address = "Finlandsgade 17, 8200 Aarhus N", Phone = "+45 71555080", PassedCourse = true },
@@ -93,6 +87,17 @@ public partial class FoodAppG4Context : DbContext
         modelBuilder.Entity<Rating>().HasData(
             new Rating { RatingId = 1, CookId = 1, CustomerId = 1, CyclistId = 1, DeliveryScore = 5, FoodScore = 5 }
         );
+
+        // modelBuilder.Entity<ApiUser>(entity =>
+        // {
+        //     entity.HasNoKey();
+
+        //     entity.Property(e => e.FullName)
+        //         .HasMaxLength(100)
+        //         .IsUnicode(false);
+        
+        //     entity.ToTable("ApiUser");
+        // });
 
         modelBuilder.Entity<Cook>(entity =>
         {
@@ -301,8 +306,8 @@ public partial class FoodAppG4Context : DbContext
                 .HasConstraintName("FK__TripStops__TripI__25518C17");
         });
 
-        OnModelCreatingPartial(modelBuilder);
+        // OnModelCreatingPartial(modelBuilder);
     }
 
-    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+    // partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
