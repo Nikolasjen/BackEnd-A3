@@ -17,6 +17,7 @@ namespace FoodAppG4.Controllers
         }
 
         // C.1: Get data for each cook
+        [Authorize(Policy = "AdminOnly")]
         [HttpGet("c1_cooks")]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 60)]
         public IActionResult GetCookData()

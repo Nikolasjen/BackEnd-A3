@@ -4,7 +4,6 @@ using FoodAppG4.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
 
 namespace FoodAppG4.Data;
 

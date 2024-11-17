@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using FoodAppG4.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace FoodAppG4.Data
@@ -6,7 +7,7 @@ namespace FoodAppG4.Data
     public class SeedData
     {
 
-        public static void SeedUsers(UserManager<IdentityUser> userManager)
+        public static void SeedUsers(UserManager<ApiUser> userManager)
         {
             const string adminEmail = "Admin@localhost";
             const string adminPassword = "Secret7$";
@@ -14,7 +15,7 @@ namespace FoodAppG4.Data
                 throw new ArgumentNullException(nameof(userManager));
             if (userManager.FindByNameAsync(adminEmail).Result == null)
             {
-                var user = new IdentityUser();
+                var user = new ApiUser();
                 user.UserName = adminEmail;
                 user.Email = adminEmail;
                 user.EmailConfirmed = true;

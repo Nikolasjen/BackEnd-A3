@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
+[ApiController]
+[Route("[controller]")]
 public class AccountController : ControllerBase
 {
     private readonly FoodAppG4Context _context;
@@ -29,6 +31,8 @@ public class AccountController : ControllerBase
         _signInManager = signInManager;
     }
 
+    [HttpPost]
+    [Route("Register")]
     public async Task<ActionResult> Register(RegisterDTO input)
     {
         try
@@ -61,6 +65,8 @@ public class AccountController : ControllerBase
         }
     }
 
+    [HttpPost]
+    [Route("Login")]
     public async Task<ActionResult> Login(LoginDTO input)
     {
         try

@@ -61,8 +61,15 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+// Policies...
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireClaim("isAdmin","true"));
+});
+
+// Add services to the container.
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -113,7 +120,7 @@ app.UseAuthorization();
 using (var scope = app.Services.CreateScope())
 {
     var serviceProvider = scope.ServiceProvider;
-    var userManager = serviceProvider.GetService<UserManager<IdentityUser>>();
+    var userManager = serviceProvider.GetService<UserManager<ApiUser>>();
     if (userManager != null)
         SeedData.SeedUsers(userManager);
     else throw new Exception("Unable to get UserManager!");
