@@ -1,8 +1,10 @@
 using FoodAppG4.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodAppG4.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class Assign1QueryController : ControllerBase
@@ -16,6 +18,7 @@ namespace FoodAppG4.Controllers
 
         // C.1: Get data for each cook
         [HttpGet("c1_cooks")]
+        [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 60)]
         public IActionResult GetCookData()
         // public ActionResult<IEnumerable<dynamic>> GetCookData()
         {
@@ -24,7 +27,9 @@ namespace FoodAppG4.Controllers
         }
 
         // C.2: Get available dish details for a specific cook's kitchen
+        [AllowAnonymous]
         [HttpGet("c2_dishes/{cookId}")]
+        [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 60)]
         public IActionResult GetDishDetailsForCook(int cookId)
         {
             var dishes = _queryService.GetDishDetailsForCook(cookId);

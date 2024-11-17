@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using FoodAppG4.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace FoodAppG4.Data;
 
@@ -95,7 +97,7 @@ public partial class FoodAppG4Context : IdentityDbContext<ApiUser>
         //     entity.Property(e => e.FullName)
         //         .HasMaxLength(100)
         //         .IsUnicode(false);
-        
+
         //     entity.ToTable("ApiUser");
         // });
 

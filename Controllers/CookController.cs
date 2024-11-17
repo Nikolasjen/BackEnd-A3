@@ -1,37 +1,11 @@
-// using FoodAppG4.Data;
-// using FoodAppG4.Models;
-// using Microsoft.AspNetCore.Mvc;
-
-// namespace FoodAppG4.Controllers;
-
-// [ApiController]
-// [Route("api/[controller]")]
-// public class CookController : ControllerBase
-// {
-//     private readonly FoodAppG4Context _context;
-
-//     // Constructor injection of the DbContext
-//     public CookController(FoodAppG4Context context)
-//     {
-//         _context = context;
-//     }
-
-//     // HTTP GET to return a list of cooks
-//     [HttpGet]
-//     public ActionResult<IEnumerable<Cook>> Get()
-//     {
-//         var cooks = _context.Cooks.ToList();
-//         return Ok(cooks); // Return 200 OK with the list of cooks
-//     }
-// }
-
-
 using FoodAppG4.Models;
 using FoodAppG4.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodAppG4.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class CookController : ControllerBase

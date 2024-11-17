@@ -1,9 +1,11 @@
 using FoodAppG4.Models;
 using FoodAppG4.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodAppG4.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class RatingController : ControllerBase
