@@ -64,8 +64,26 @@ builder.Services.AddAuthentication(options =>
 // Policies...
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("AdminOnly", policy => policy.RequireClaim("isAdmin","true"));
+    options.AddPolicy("AdminOnly", policy =>
+        policy.RequireAssertion(context =>
+            context.User.HasClaim(c => c.Type == "IsAdmin" && c.Value == "true")));
+
+    options.AddPolicy("AdminOrManagerOnly", policy =>
+        policy.RequireAssertion(context =>
+            context.User.HasClaim(c => c.Type == "IsAdmin" && c.Value == "true") ||
+            context.User.HasClaim(c => c.Type == "IsManager" && c.Value == "true")));
+
+    options.AddPolicy("AdminOrCookOnly", policy =>
+        policy.RequireAssertion(context =>
+            context.User.HasClaim(c => c.Type == "IsAdmin" && c.Value == "true") ||
+            context.User.HasClaim(c => c.Type == "IsCook" && c.Value == "true")));
+
+    options.AddPolicy("AdminOrCyclistOnly", policy =>
+        policy.RequireAssertion(context =>
+            context.User.HasClaim(c => c.Type == "IsAdmin" && c.Value == "true") ||
+            context.User.HasClaim(c => c.Type == "IsCyclist" && c.Value == "true")));
 });
+
 
 // Add services to the container.
 builder.Services.AddControllers();
