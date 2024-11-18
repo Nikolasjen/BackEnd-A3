@@ -81,6 +81,7 @@ namespace FoodAppG4.Data
                 user3.UserName = cookEmail;
                 user3.Email = cookEmail;
                 user3.EmailConfirmed = true;
+                user3.CookId = 1;
                 IdentityResult result3 = userManager.CreateAsync(user3, cookPassword).Result;
                 if (result3.Succeeded)
                 {
@@ -90,11 +91,13 @@ namespace FoodAppG4.Data
                         throw new Exception("Failed to find cook user");
                     }
                     var claim = new Claim("IsCook", "true");
+                    var claim2 = new Claim("CookId", user3.CookId.ToString() ?? string.Empty);
                     var claimAdded = userManager.AddClaimAsync(cookUser, claim).Result;
+                    var claimAdded2 = userManager.AddClaimAsync(cookUser, claim2).Result;
 
-                    if (!claimAdded.Succeeded)
+                    if (!claimAdded.Succeeded || !claimAdded2.Succeeded)
                     {
-                        throw new Exception("Failed to add claim to cook user");
+                        throw new Exception("Failed to add claims to cook user");
                     }
                 }
             }
@@ -108,6 +111,7 @@ namespace FoodAppG4.Data
                 user3.UserName = cyclistEmail;
                 user3.Email = cyclistEmail;
                 user3.EmailConfirmed = true;
+                user3.CyclistId = 1;
                 IdentityResult result3 = userManager.CreateAsync(user3, cyclistPassword).Result;
                 if (result3.Succeeded)
                 {
@@ -117,11 +121,13 @@ namespace FoodAppG4.Data
                         throw new Exception("Failed to find cyclist user");
                     }
                     var claim = new Claim("IsCyclist", "true");
+                    var claim2 = new Claim("CyclistId", user3.CyclistId.ToString() ?? string.Empty);
                     var claimAdded = userManager.AddClaimAsync(cyclistUser, claim).Result;
+                    var claimAdded2 = userManager.AddClaimAsync(cyclistUser, claim2).Result;
 
-                    if (!claimAdded.Succeeded)
+                    if (!claimAdded.Succeeded || !claimAdded2.Succeeded)
                     {
-                        throw new Exception("Failed to add claim to cyclist user");
+                        throw new Exception("Failed to add claims to cyclist user");
                     }
                 }
             }

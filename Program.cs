@@ -82,6 +82,7 @@ builder.Services.AddAuthorization(options =>
         policy.RequireAssertion(context =>
             context.User.HasClaim(c => c.Type == "IsAdmin" && c.Value == "true") ||
             context.User.HasClaim(c => c.Type == "IsCyclist" && c.Value == "true")));
+    
 });
 
 

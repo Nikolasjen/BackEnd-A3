@@ -4,6 +4,7 @@ using FoodAppG4.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FoodAppG4.Migrations
 {
     [DbContext(typeof(FoodAppG4Context))]
-    partial class FoodAppG4ContextModelSnapshot : ModelSnapshot
+    [Migration("20241118162742_UserLinking")]
+    partial class UserLinking
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -181,13 +184,6 @@ namespace FoodAppG4.Migrations
                             Address = "Finsensgade 1493, 8000 Aarhus",
                             Name = "Knuth",
                             PaymentInfo = "Card"
-                        },
-                        new
-                        {
-                            CustomerId = 2,
-                            Address = "Ny Munkegade 118, 8200 Aarhus N",
-                            Name = "Dijkstra",
-                            PaymentInfo = "MobilePay"
                         });
                 });
 
@@ -223,13 +219,6 @@ namespace FoodAppG4.Migrations
                             BikeType = "Electric Bike",
                             HourlyRate = 100.00m,
                             Name = "Star"
-                        },
-                        new
-                        {
-                            CyclistId = 2,
-                            BikeType = "Mountain Bike",
-                            HourlyRate = 80.00m,
-                            Name = "Moon"
                         });
                 });
 
@@ -291,15 +280,6 @@ namespace FoodAppG4.Migrations
                             CookId = 2,
                             Name = "Lemonade",
                             Price = 15.00m
-                        },
-                        new
-                        {
-                            DishId = 4,
-                            AvailableFrom = new DateTime(2024, 9, 15, 12, 0, 0, 0, DateTimeKind.Unspecified),
-                            AvailableTo = new DateTime(2024, 9, 15, 15, 0, 0, 0, DateTimeKind.Unspecified),
-                            CookId = 2,
-                            Name = "Burger",
-                            Price = 50.00m
                         });
                 });
 
@@ -328,13 +308,7 @@ namespace FoodAppG4.Migrations
                         {
                             OrderId = 1,
                             CustomerId = 1,
-                            OrderDate = new DateTime(2024, 11, 18, 18, 2, 38, 79, DateTimeKind.Local).AddTicks(8065)
-                        },
-                        new
-                        {
-                            OrderId = 2,
-                            CustomerId = 2,
-                            OrderDate = new DateTime(2024, 11, 18, 18, 2, 38, 79, DateTimeKind.Local).AddTicks(8121)
+                            OrderDate = new DateTime(2024, 11, 18, 17, 27, 41, 857, DateTimeKind.Local).AddTicks(4979)
                         });
                 });
 
@@ -378,13 +352,6 @@ namespace FoodAppG4.Migrations
                             DishId = 2,
                             OrderId = 1,
                             Quantity = 4
-                        },
-                        new
-                        {
-                            OrderDetailId = 3,
-                            DishId = 3,
-                            OrderId = 2,
-                            Quantity = 1
                         });
                 });
 
@@ -432,24 +399,6 @@ namespace FoodAppG4.Migrations
                             CyclistId = 1,
                             DeliveryScore = 5,
                             FoodScore = 5
-                        },
-                        new
-                        {
-                            RatingId = 2,
-                            CookId = 1,
-                            CustomerId = 1,
-                            CyclistId = 2,
-                            DeliveryScore = 4,
-                            FoodScore = 4
-                        },
-                        new
-                        {
-                            RatingId = 3,
-                            CookId = 2,
-                            CustomerId = 1,
-                            CyclistId = 1,
-                            DeliveryScore = 3,
-                            FoodScore = 3
                         });
                 });
 
@@ -508,12 +457,6 @@ namespace FoodAppG4.Migrations
                             TripId = 1,
                             CyclistId = 1,
                             OrderId = 1
-                        },
-                        new
-                        {
-                            TripId = 2,
-                            CyclistId = 2,
-                            OrderId = 2
                         });
                 });
 
@@ -563,22 +506,6 @@ namespace FoodAppG4.Migrations
                             StopAddress = "Finsensgade 1493, 8000 Aarhus",
                             StopTime = new DateTime(2024, 9, 15, 12, 16, 0, 0, DateTimeKind.Unspecified),
                             TripId = 1
-                        },
-                        new
-                        {
-                            TripStopsId = 3,
-                            ActionType = "Picked Up",
-                            StopAddress = "Ny Munkegade 118, 8200 Aarhus N",
-                            StopTime = new DateTime(2024, 9, 15, 16, 0, 0, 0, DateTimeKind.Unspecified),
-                            TripId = 2
-                        },
-                        new
-                        {
-                            TripStopsId = 4,
-                            ActionType = "Delivered",
-                            StopAddress = "Finsensgade 1493, 8000 Aarhus",
-                            StopTime = new DateTime(2024, 9, 15, 16, 16, 0, 0, DateTimeKind.Unspecified),
-                            TripId = 2
                         });
                 });
 

@@ -47,46 +47,56 @@ public partial class FoodAppG4Context : IdentityDbContext<ApiUser>
 
         // Seed data for Cyclist
         modelBuilder.Entity<Cyclist>().HasData(
-            new Cyclist { CyclistId = 1, Name = "Star", HourlyRate = 100.00M, BikeType = "Electric Bike" }
+            new Cyclist { CyclistId = 1, Name = "Star", HourlyRate = 100.00M, BikeType = "Electric Bike" },
+            new Cyclist { CyclistId = 2, Name = "Moon", HourlyRate = 80.00M, BikeType = "Mountain Bike" }
         );
 
         // Seed data for Customers
         modelBuilder.Entity<Customer>().HasData(
-            new Customer { CustomerId = 1, Name = "Knuth", Address = "Finsensgade 1493, 8000 Aarhus", PaymentInfo = "Card" }
+            new Customer { CustomerId = 1, Name = "Knuth", Address = "Finsensgade 1493, 8000 Aarhus", PaymentInfo = "Card" },
+            new Customer { CustomerId = 2, Name = "Dijkstra", Address = "Ny Munkegade 118, 8200 Aarhus N", PaymentInfo = "MobilePay" }
         );
 
         // Seed data for Dishes
         modelBuilder.Entity<Dish>().HasData(
             new Dish { DishId = 1, CookId = 1, Name = "Pasta", Price = 30.00M, AvailableFrom = new DateTime(2024, 9, 15, 11, 30, 0), AvailableTo = new DateTime(2024, 9, 15, 12, 30, 0) },
             new Dish { DishId = 2, CookId = 1, Name = "Romkugle", Price = 3.00M, AvailableFrom = new DateTime(2024, 9, 15, 8, 0, 0), AvailableTo = new DateTime(2024, 9, 15, 12, 30, 0) },
-            new Dish { DishId = 3, CookId = 2, Name = "Lemonade", Price = 15.00M, AvailableFrom = new DateTime(2024, 9, 15, 14, 0, 0), AvailableTo = new DateTime(2024, 9, 15, 16, 0, 0) }
+            new Dish { DishId = 3, CookId = 2, Name = "Lemonade", Price = 15.00M, AvailableFrom = new DateTime(2024, 9, 15, 14, 0, 0), AvailableTo = new DateTime(2024, 9, 15, 16, 0, 0) },
+            new Dish { DishId = 4, CookId = 2, Name = "Burger", Price = 50.00M, AvailableFrom = new DateTime(2024, 9, 15, 12, 0, 0), AvailableTo = new DateTime(2024, 9, 15, 15, 0, 0) }
         );
 
         // Seed data for Orders
         modelBuilder.Entity<Order>().HasData(
-            new Order { OrderId = 1, CustomerId = 1, OrderDate = DateTime.Now }
+            new Order { OrderId = 1, CustomerId = 1, OrderDate = DateTime.Now },
+            new Order { OrderId = 2, CustomerId = 2, OrderDate = DateTime.Now }
         );
 
         // Seed data for OrderDetails
         modelBuilder.Entity<OrderDetail>().HasData(
             new OrderDetail { OrderDetailId = 1, OrderId = 1, DishId = 1, Quantity = 2 }, // 2 Pasta from Noah's kitchen
-            new OrderDetail { OrderDetailId = 2, OrderId = 1, DishId = 2, Quantity = 4 }  // 4 Romkugle from Noah's kitchen
+            new OrderDetail { OrderDetailId = 2, OrderId = 1, DishId = 2, Quantity = 4 },  // 4 Romkugle from Noah's kitchen
+            new OrderDetail { OrderDetailId = 3, OrderId = 2, DishId = 3, Quantity = 1 } // 1 Lemonade from Helle's kitchen
         );
 
         // Seed data for Trips
         modelBuilder.Entity<Trip>().HasData(
-            new Trip { TripId = 1, OrderId = 1, CyclistId = 1 }
+            new Trip { TripId = 1, OrderId = 1, CyclistId = 1 },
+            new Trip { TripId = 2, OrderId = 2, CyclistId = 2 }
         );
 
         // Seed data for TripStops
         modelBuilder.Entity<TripStop>().HasData(
             new TripStop { TripStopsId = 1, TripId = 1, StopAddress = "Finlandsgade 17, 8200 Aarhus N", ActionType = "Picked Up", StopTime = new DateTime(2024, 9, 15, 12, 0, 0) },
-            new TripStop { TripStopsId = 2, TripId = 1, StopAddress = "Finsensgade 1493, 8000 Aarhus", ActionType = "Delivered", StopTime = new DateTime(2024, 9, 15, 12, 16, 0) }
+            new TripStop { TripStopsId = 2, TripId = 1, StopAddress = "Finsensgade 1493, 8000 Aarhus", ActionType = "Delivered", StopTime = new DateTime(2024, 9, 15, 12, 16, 0) },
+            new TripStop { TripStopsId = 3, TripId = 2, StopAddress = "Ny Munkegade 118, 8200 Aarhus N", ActionType = "Picked Up", StopTime = new DateTime(2024, 9, 15, 16, 0, 0) },
+            new TripStop { TripStopsId = 4, TripId = 2, StopAddress = "Finsensgade 1493, 8000 Aarhus", ActionType = "Delivered", StopTime = new DateTime(2024, 9, 15, 16, 16, 0) }
         );
 
         // Seed data for Ratings
         modelBuilder.Entity<Rating>().HasData(
-            new Rating { RatingId = 1, CookId = 1, CustomerId = 1, CyclistId = 1, DeliveryScore = 5, FoodScore = 5 }
+            new Rating { RatingId = 1, CookId = 1, CustomerId = 1, CyclistId = 1, DeliveryScore = 5, FoodScore = 5 },
+            new Rating { RatingId = 2, CookId = 1, CustomerId = 1, CyclistId = 2, DeliveryScore = 4, FoodScore = 4 },
+            new Rating { RatingId = 3, CookId = 2, CustomerId = 1, CyclistId = 1, DeliveryScore = 3, FoodScore = 3 }
         );
 
         // modelBuilder.Entity<ApiUser>(entity =>

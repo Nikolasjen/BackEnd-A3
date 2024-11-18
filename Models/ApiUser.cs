@@ -7,5 +7,8 @@ namespace FoodAppG4.Models
     {
         [MaxLength(100)]
         public string? FullName { get; set; }
+        public int? CookId { get; set; } = null;
+        public int? CyclistId { get; set; } = null;
+        
     }
 }

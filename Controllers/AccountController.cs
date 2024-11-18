@@ -49,6 +49,7 @@ public class AccountController : ControllerBase
             newUser.UserName = input.Email;
             newUser.Email = input.Email;
             newUser.FullName = input.FullName;
+            // TODO: Add the user id's - no, this is done manually by the admin in sql! 
             var result = await _userManager.CreateAsync(newUser, input.Password);
             if (result.Succeeded)
             {
@@ -91,6 +92,8 @@ public class AccountController : ControllerBase
             // Add the claims to the token
             var claims = new List<Claim>();
             claims.Add(new Claim(ClaimTypes.Name, user.UserName));
+            claims.Add(new Claim("CookId", user.CookId.ToString() ?? string.Empty));
+            claims.Add(new Claim("CyclistId", user.CyclistId.ToString() ?? string.Empty));
             claims.AddRange(userClaims);
 
             // Create signing credentials
