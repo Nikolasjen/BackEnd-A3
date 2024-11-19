@@ -11,10 +11,12 @@ namespace FoodAppG4.Controllers;
 public class SalaryController : ControllerBase
 {
     private readonly SalaryService _salaryService;
+    private readonly ILogger<SalaryController> _logger;
 
-    public SalaryController(SalaryService salaryService)
+    public SalaryController(SalaryService salaryService, ILogger<SalaryController> logger)
     {
         _salaryService = salaryService;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -38,6 +40,7 @@ public class SalaryController : ControllerBase
     [HttpPost]
     public ActionResult<Salary> Post(Salary salary)
     {
+        _logger.LogInformation("Salary called Post (POST) with Salary:{@Salary} ", salary);
         var createdSalary = _salaryService.AddSalary(salary);
         return CreatedAtAction(nameof(Get), new { id = createdSalary.SalaryId }, createdSalary);
     }
@@ -45,6 +48,7 @@ public class SalaryController : ControllerBase
     [HttpPut("{id}")]
     public IActionResult Put(int id, Salary salary)
     {
+        _logger.LogInformation("Salary called Put (PUT) with ID:{Id} and Salary:{@Salary} ", id, salary);
         if (!_salaryService.UpdateSalary(id, salary))
         {
             return NotFound();
@@ -56,6 +60,7 @@ public class SalaryController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
+        _logger.LogInformation("Salary called Delete (DELETE) with ID:{Id} ", id);
         if (!_salaryService.DeleteSalary(id))
         {
             return NotFound();

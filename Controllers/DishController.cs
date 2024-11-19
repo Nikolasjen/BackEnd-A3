@@ -11,15 +11,18 @@ namespace FoodAppG4.Controllers;
 public class DishController : ControllerBase
 {
     private readonly DishService _dishService;
+    private readonly ILogger<Assign1QueryController> _logger;
 
-    public DishController(DishService dishService)
+    public DishController(DishService dishService, ILogger<Assign1QueryController> logger)
     {
         _dishService = dishService;
+        _logger = logger;
     }
 
     [HttpGet]
     public ActionResult<IEnumerable<Dish>> Get()
     {
+        _logger.LogInformation("Dish called Get (GET)");
         var dishs = _dishService.GetAllDishs();
         return Ok(dishs);
     }
@@ -39,6 +42,7 @@ public class DishController : ControllerBase
     [HttpPost]
     public IActionResult AddDish(Dish dish)
     {
+        _logger.LogInformation("Dish called AddDish (POST) with Dish:{@Dish} ", dish);
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
@@ -52,6 +56,7 @@ public class DishController : ControllerBase
     [HttpPut("{id}")]
     public IActionResult Put(int id, Dish dish)
     {
+        _logger.LogInformation("Dish called Put (PUT) with ID:{Id} and Dish:{@Dish} ", id, dish);
         if (!_dishService.UpdateDish(id, dish))
         {
             return NotFound();
@@ -63,6 +68,7 @@ public class DishController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
+        _logger.LogInformation("Dish called Delete (DELETE) with ID: {Id}", id);
         if (!_dishService.DeleteDish(id))
         {
             return NotFound();

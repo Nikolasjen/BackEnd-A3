@@ -11,10 +11,12 @@ namespace FoodAppG4.Controllers;
 public class OrderController : ControllerBase
 {
     private readonly OrderService _orderService;
+    private readonly ILogger<Assign1QueryController> _logger;
 
-    public OrderController(OrderService orderService)
+    public OrderController(OrderService orderService, ILogger<Assign1QueryController> logger)
     {
         _orderService = orderService;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -38,6 +40,7 @@ public class OrderController : ControllerBase
     [HttpPost]
     public ActionResult<Order> Post(Order order)
     {
+        _logger.LogInformation("Order called Post (POST) with Order:{@Order} ", order);
         var createdOrder = _orderService.AddOrder(order);
         return CreatedAtAction(nameof(Get), new { id = createdOrder.OrderId }, createdOrder);
     }
@@ -45,6 +48,7 @@ public class OrderController : ControllerBase
     [HttpPut("{id}")]
     public IActionResult Put(int id, Order order)
     {
+        _logger.LogInformation("Order called Put (PUT) with ID:{Id} and Order:{@Order} ", id, order);
         if (!_orderService.UpdateOrder(id, order))
         {
             return NotFound();
@@ -56,6 +60,7 @@ public class OrderController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
+        _logger.LogInformation("Order called Delete (DELETE) with ID:{Id} ", id);
         if (!_orderService.DeleteOrder(id))
         {
             return NotFound();

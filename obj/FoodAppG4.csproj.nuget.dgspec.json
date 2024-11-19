@@ -71,6 +71,22 @@
               "target": "Package",
               "version": "[8.0.10, )"
             },
+            "Serilog": {
+              "target": "Package",
+              "version": "[4.1.0, )"
+            },
+            "Serilog.AspNetCore": {
+              "target": "Package",
+              "version": "[8.0.3, )"
+            },
+            "Serilog.Settings.Configuration": {
+              "target": "Package",
+              "version": "[8.0.4, )"
+            },
+            "Serilog.Sinks.MongoDB": {
+              "target": "Package",
+              "version": "[7.0.0, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.4.0, )"

@@ -11,10 +11,12 @@ namespace FoodAppG4.Controllers;
 public class RatingController : ControllerBase
 {
     private readonly RatingService _ratingService;
+    private readonly ILogger<RatingController> _logger;
 
-    public RatingController(RatingService ratingService)
+    public RatingController(RatingService ratingService, ILogger<RatingController> logger)
     {
         _ratingService = ratingService;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -38,6 +40,7 @@ public class RatingController : ControllerBase
     [HttpPost]
     public ActionResult<Rating> Post(Rating rating)
     {
+        _logger.LogInformation("Rating called Post (POST) with Rating:{@Rating} ", rating);
         var createdRating = _ratingService.AddRating(rating);
         return CreatedAtAction(nameof(Get), new { id = createdRating.RatingId }, createdRating);
     }
@@ -45,6 +48,7 @@ public class RatingController : ControllerBase
     [HttpPut("{id}")]
     public IActionResult Put(int id, Rating rating)
     {
+        _logger.LogInformation("Rating called Put (PUT) with ID:{Id} and Rating:{@Rating} ", id, rating);
         if (!_ratingService.UpdateRating(id, rating))
         {
             return NotFound();
@@ -56,6 +60,7 @@ public class RatingController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
+        _logger.LogInformation("Rating called Delete (DELETE) with ID:{Id} ", id);
         if (!_ratingService.DeleteRating(id))
         {
             return NotFound();

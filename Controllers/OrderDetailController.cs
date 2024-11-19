@@ -11,10 +11,12 @@ namespace FoodAppG4.Controllers;
 public class OrderDetailController : ControllerBase
 {
     private readonly OrderDetailService _orderDetailService;
+    private readonly ILogger<OrderDetailController> _logger;
 
-    public OrderDetailController(OrderDetailService orderDetailService)
+    public OrderDetailController(OrderDetailService orderDetailService, ILogger<OrderDetailController> logger)
     {
         _orderDetailService = orderDetailService;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -38,6 +40,7 @@ public class OrderDetailController : ControllerBase
     [HttpPost]
     public ActionResult<OrderDetail> Post(OrderDetail orderDetail)
     {
+        _logger.LogInformation("OrderDetail called Post (POST) with OrderDetail:{@OrderDetail} ", orderDetail);
         var createdOrderDetail = _orderDetailService.AddOrderDetail(orderDetail);
         return CreatedAtAction(nameof(Get), new { id = createdOrderDetail.OrderDetailId }, createdOrderDetail);
     }
@@ -45,6 +48,7 @@ public class OrderDetailController : ControllerBase
     [HttpPut("{id}")]
     public IActionResult Put(int id, OrderDetail orderDetail)
     {
+        _logger.LogInformation("OrderDetail called Put (PUT) with ID:{Id} and OrderDetail:{@OrderDetail} ", id, orderDetail);
         if (!_orderDetailService.UpdateOrderDetail(id, orderDetail))
         {
             return NotFound();
@@ -56,6 +60,7 @@ public class OrderDetailController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
+        _logger.LogInformation("OrderDetail called Delete (DELETE) with ID:{Id} ", id);
         if (!_orderDetailService.DeleteOrderDetail(id))
         {
             return NotFound();

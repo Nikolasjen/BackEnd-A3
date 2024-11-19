@@ -13,21 +13,21 @@ using Microsoft.IdentityModel.Tokens;
 public class AccountController : ControllerBase
 {
     private readonly FoodAppG4Context _context;
-    // private readonly ILogger<DomainsController> _logger;
+    private readonly ILogger<AccountController> _logger;
     private readonly IConfiguration _configuration;
     private readonly UserManager<ApiUser> _userManager;
     private readonly SignInManager<ApiUser> _signInManager;
 
     public AccountController(
     FoodAppG4Context context,
-    // ILogger<DomainsController> logger,
+    ILogger<AccountController> logger,
     IConfiguration configuration,
     UserManager<ApiUser> userManager,
     SignInManager<ApiUser> signInManager
     )
     {
         _context = context;
-        // _logger = logger;
+        _logger = logger;
         _configuration = configuration;
         _userManager = userManager;
         _signInManager = signInManager;
@@ -53,9 +53,9 @@ public class AccountController : ControllerBase
             var result = await _userManager.CreateAsync(newUser, input.Password);
             if (result.Succeeded)
             {
-                // _logger.LogInformation(
-                //     "User {userName} ({email}) has been created.",
-                //     newUser.UserName, newUser.Email);
+                _logger.LogInformation(
+                    "User {userName} ({email}) has been created.",
+                    newUser.UserName, newUser.Email);
                 return StatusCode(201, $"User {newUser.UserName} has been created.");
             }
             else
@@ -65,6 +65,7 @@ public class AccountController : ControllerBase
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Error during registration.");
             return StatusCode(500, ex.Message);
         }
     }
@@ -112,12 +113,14 @@ public class AccountController : ControllerBase
 
             var jwtString = new JwtSecurityTokenHandler().WriteToken(jwtObject);
 
+            _logger.LogInformation("User {userName} has logged in.", user.UserName);
             return StatusCode(StatusCodes.Status200OK, jwtString);
 
 
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Error during login.");
             return StatusCode(500, ex.Message);
         }
     }

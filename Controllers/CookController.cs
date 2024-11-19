@@ -11,10 +11,12 @@ namespace FoodAppG4.Controllers;
 public class CookController : ControllerBase
 {
     private readonly CookService _cookService;
+    private readonly ILogger<Assign1QueryController> _logger;
 
-    public CookController(CookService cookService)
+    public CookController(CookService cookService, ILogger<Assign1QueryController> logger)
     {
         _cookService = cookService;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -38,6 +40,8 @@ public class CookController : ControllerBase
     [HttpPost]
     public ActionResult<Cook> Post(Cook cook)
     {
+        _logger.LogInformation("Cook called Post (POST) with Cook:{@Cook} ", cook);
+
         var createdCook = _cookService.AddCook(cook);
         return CreatedAtAction(nameof(Get), new { id = createdCook.CookId }, createdCook);
     }
@@ -45,6 +49,7 @@ public class CookController : ControllerBase
     [HttpPut("{id}")]
     public IActionResult Put(int id, Cook cook)
     {
+        _logger.LogInformation("Cook called Put (PUT) with ID:{Id} and Cook:{@Cook} ", id, cook);
         if (!_cookService.UpdateCook(id, cook))
         {
             return NotFound();
@@ -56,6 +61,8 @@ public class CookController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
+        _logger.LogInformation("Cook called Delete (DELETE) with ID: {Id}", id);
+
         if (!_cookService.DeleteCook(id))
         {
             return NotFound();

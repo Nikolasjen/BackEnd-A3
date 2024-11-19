@@ -11,10 +11,12 @@ namespace FoodAppG4.Controllers;
 public class TripStopController : ControllerBase
 {
     private readonly TripStopService _tripStopService;
+    private readonly ILogger<TripStopController> _logger;
 
-    public TripStopController(TripStopService tripStopService)
+    public TripStopController(TripStopService tripStopService, ILogger<TripStopController> logger)
     {
         _tripStopService = tripStopService;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -38,6 +40,7 @@ public class TripStopController : ControllerBase
     [HttpPost]
     public ActionResult<TripStop> Post(TripStop tripStop)
     {
+        _logger.LogInformation("TripStop called Post (POST) with TripStop:{@TripStop} ", tripStop);
         var createdTripStop = _tripStopService.AddTripStop(tripStop);
         return CreatedAtAction(nameof(Get), new { id = createdTripStop.TripStopsId }, createdTripStop);
     }
@@ -45,6 +48,7 @@ public class TripStopController : ControllerBase
     [HttpPut("{id}")]
     public IActionResult Put(int id, TripStop tripStop)
     {
+        _logger.LogInformation("TripStop called Put (PUT) with ID:{Id} and TripStop:{@TripStop} ", id, tripStop);
         if (!_tripStopService.UpdateTripStop(id, tripStop))
         {
             return NotFound();
@@ -56,6 +60,7 @@ public class TripStopController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
+        _logger.LogInformation("TripStop called Delete (DELETE) with ID:{Id} ", id);
         if (!_tripStopService.DeleteTripStop(id))
         {
             return NotFound();

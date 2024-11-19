@@ -12,11 +12,14 @@ namespace FoodAppG4.Controllers
     {
         private readonly QueryService _queryService;
         private readonly CookService _cookService;
+        // private readonly ILogger<Assign1QueryController> _logger;
 
+        // public Assign1QueryController(QueryService queryService, CookService cookService, ILogger<Assign1QueryController> logger)
         public Assign1QueryController(QueryService queryService, CookService cookService)
         {
             _queryService = queryService;
             _cookService = cookService;
+            // _logger = logger;
         }
 
         // C.1: Get data for each cook
@@ -24,8 +27,9 @@ namespace FoodAppG4.Controllers
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 60)]
         [Authorize(Policy = "AdminOrManagerOnly")]
         public IActionResult GetCookData()
-        // public ActionResult<IEnumerable<dynamic>> GetCookData()
         {
+            // _logger.LogInformation("GET called GetCookData");
+
             var cooks = _queryService.GetCookData();
             return Ok(cooks);
         }
@@ -36,6 +40,8 @@ namespace FoodAppG4.Controllers
         [AllowAnonymous]
         public IActionResult GetDishDetailsForCook(int cookId)
         {
+            // _logger.LogInformation("GET called GetDishDetailsForCook with ID:{} ", cookId);
+
             var dishes = _queryService.GetDishDetailsForCook(cookId);
             return Ok(dishes);
         }
@@ -61,7 +67,7 @@ namespace FoodAppG4.Controllers
         [Authorize(Policy = "AdminOrCookOnly")]
         public IActionResult GetCookAverageRating(int cookId)
         {
-            
+
             // Retrieve the IsAdmin claim
             var isAdmin = User.HasClaim("IsAdmin", "true");
 
@@ -139,7 +145,7 @@ namespace FoodAppG4.Controllers
 
 
             var earnings = _queryService.GetMonthlyHoursAndEarnings(cyclistId);
-            
+
             if (earnings == null)
             {
                 return NotFound();

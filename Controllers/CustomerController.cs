@@ -11,10 +11,12 @@ namespace FoodAppG4.Controllers
     public class CustomerController : ControllerBase
     {
         private readonly CustomerService _customerService;
+    private readonly ILogger<Assign1QueryController> _logger;
 
-        public CustomerController(CustomerService customerService)
+        public CustomerController(CustomerService customerService, ILogger<Assign1QueryController> logger)
         {
             _customerService = customerService;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -38,6 +40,7 @@ namespace FoodAppG4.Controllers
         [HttpPost]
         public IActionResult AddCustomer(Customer customer)
         {
+            _logger.LogInformation("Customer called AddCustomer (POST) with Customer:{@Customer} ", customer);
             var createdCustomer = _customerService.AddCustomer(customer);
             return CreatedAtAction(nameof(GetCustomerById), new { id = createdCustomer.CustomerId }, createdCustomer);
         }
@@ -45,6 +48,7 @@ namespace FoodAppG4.Controllers
         [HttpPut("{id}")]
         public IActionResult UpdateCustomer(int id, Customer customer)
         {
+            _logger.LogInformation("Customer called UpdateCustomer (PUT) with ID:{Id} and Customer:{@Customer} ", id, customer);
             if (!_customerService.UpdateCustomer(id, customer))
             {
                 return NotFound();
@@ -55,6 +59,7 @@ namespace FoodAppG4.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteCustomer(int id)
         {
+            _logger.LogInformation("Customer called DeleteCustomer (DELETE) with ID:{Id} ", id);
             if (!_customerService.DeleteCustomer(id))
             {
                 return NotFound();
