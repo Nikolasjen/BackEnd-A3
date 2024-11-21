@@ -11,9 +11,9 @@ namespace FoodAppG4.Controllers;
 public class OrderController : ControllerBase
 {
     private readonly OrderService _orderService;
-    private readonly ILogger<Assign1QueryController> _logger;
+    private readonly ILogger<OrderController> _logger;
 
-    public OrderController(OrderService orderService, ILogger<Assign1QueryController> logger)
+    public OrderController(OrderService orderService, ILogger<OrderController> logger)
     {
         _orderService = orderService;
         _logger = logger;

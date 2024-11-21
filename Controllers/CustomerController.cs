@@ -11,9 +11,9 @@ namespace FoodAppG4.Controllers
     public class CustomerController : ControllerBase
     {
         private readonly CustomerService _customerService;
-    private readonly ILogger<Assign1QueryController> _logger;
+    private readonly ILogger<CustomerController> _logger;
 
-        public CustomerController(CustomerService customerService, ILogger<Assign1QueryController> logger)
+        public CustomerController(CustomerService customerService, ILogger<CustomerController> logger)
         {
             _customerService = customerService;
             _logger = logger;

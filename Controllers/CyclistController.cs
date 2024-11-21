@@ -11,9 +11,9 @@ namespace FoodAppG4.Controllers;
 public class CyclistController : ControllerBase
 {
     private readonly CyclistService _cyclistService;
-    private readonly ILogger<Assign1QueryController> _logger;
+    private readonly ILogger<CyclistController> _logger;
 
-    public CyclistController(CyclistService cyclistService, ILogger<Assign1QueryController> logger)
+    public CyclistController(CyclistService cyclistService, ILogger<CyclistController> logger)
     {
         _cyclistService = cyclistService;
         _logger = logger;

@@ -7,19 +7,29 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using MongoDB.Driver;
 
 try
 {
     var builder = WebApplication.CreateBuilder(args);
 
+    // Configure Serilog
+    Log.Logger = new LoggerConfiguration()
+        .ReadFrom.Configuration(builder.Configuration)
+        .Enrich.FromLogContext()
+        .CreateLogger();
+
+    builder.Host.UseSerilog();
+
+    // Register MongoDB client
+    var mongoConnectionString = builder.Configuration.GetConnectionString("MongoDB");
+    builder.Services.AddSingleton<IMongoClient>(sp => new MongoClient(mongoConnectionString));
+
     // Add services to the container.
     builder.Services.AddDbContext<FoodAppG4Context>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-    // Configure Serilog
-    builder.Host.UseSerilog((context, config) => config.ReadFrom.Configuration(context.Configuration));
-
-
+    // Register application services
     builder.Services.AddScoped<CookService>();
     builder.Services.AddScoped<CustomerService>();
     builder.Services.AddScoped<CyclistService>();
@@ -30,8 +40,8 @@ try
     builder.Services.AddScoped<TripStopService>();
     builder.Services.AddScoped<SalaryService>();
     builder.Services.AddScoped<RatingService>();
-
     builder.Services.AddScoped<QueryService>();
+    builder.Services.AddScoped<LogService>();
 
     // Add Identity
     builder.Services.AddIdentity<ApiUser, IdentityRole>(options =>
@@ -63,12 +73,12 @@ try
             ValidAudience = builder.Configuration["JWT:Audience"],
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(
-        System.Text.Encoding.UTF8.GetBytes(
-        builder.Configuration["JWT:SigningKey"]))
+                System.Text.Encoding.UTF8.GetBytes(
+                builder.Configuration["JWT:SigningKey"]))
         };
     });
 
-    // Policies...
+    // Authorization Policies...
     builder.Services.AddAuthorization(options =>
     {
         options.AddPolicy("AdminOnly", policy =>
@@ -89,18 +99,15 @@ try
             policy.RequireAssertion(context =>
                 context.User.HasClaim(c => c.Type == "IsAdmin" && c.Value == "true") ||
                 context.User.HasClaim(c => c.Type == "IsCyclist" && c.Value == "true")));
-
     });
 
-
-    // Add services to the container.
+    // Add controllers
     builder.Services.AddControllers();
 
+    // Swagger Configuration
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen(options =>
     {
-        // options.ParameterFilter<SortColumnFilter>();
-        // options.ParameterFilter<SortOrderFilter>();
         options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
         {
             In = ParameterLocation.Header,
@@ -126,23 +133,17 @@ try
         });
     });
 
-    // builder.Services.AddRazorPages();
-
     var app = builder.Build();
 
     // Configure the HTTP request pipeline.
-    // if (app.Environment.IsDevelopment())
-    // {
     app.UseSwagger();
     app.UseSwaggerUI();
-    // }
 
     app.UseHttpsRedirection();
 
     app.UseAuthentication();
     app.UseAuthorization();
 
-    // app.MapRazorPages();
     using (var scope = app.Services.CreateScope())
     {
         var serviceProvider = scope.ServiceProvider;
@@ -159,7 +160,6 @@ try
 catch (Exception ex)
 {
     Console.WriteLine("An error occurred: {0}", ex.Message);
-    // Console.WriteLine(ex.Message);
     // Log.Fatal(ex, "Application startup failed");
 }
 finally

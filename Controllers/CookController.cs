@@ -11,24 +11,28 @@ namespace FoodAppG4.Controllers;
 public class CookController : ControllerBase
 {
     private readonly CookService _cookService;
-    private readonly ILogger<Assign1QueryController> _logger;
+    private readonly ILogger<CookController> _logger;
 
-    public CookController(CookService cookService, ILogger<Assign1QueryController> logger)
+    public CookController(CookService cookService, ILogger<CookController> logger)
     {
         _cookService = cookService;
         _logger = logger;
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<Cook>> Get()
+    public ActionResult<IEnumerable<Cook>> GetAllCooks()
     {
+        _logger.LogInformation("Operation: GetAllCooks");
+
         var cooks = _cookService.GetAllCooks();
         return Ok(cooks);
     }
 
     [HttpGet("{id}")]
-    public ActionResult<Cook> Get(int id)
+    public ActionResult<Cook> GetCookById(int id)
     {
+        _logger.LogInformation("Operation: GetCookById, Id: {Id}", id);
+
         var cook = _cookService.GetCookById(id);
         if (cook == null)
         {
@@ -38,20 +42,21 @@ public class CookController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult<Cook> Post(Cook cook)
+    public ActionResult<Cook> AddCook(Cook cook)
     {
-        _logger.LogInformation("Cook called Post (POST) with Cook:{@Cook} ", cook);
+        _logger.LogInformation("Operation: CreateCook, Cook: {@Cook}", cook);
 
         var createdCook = _cookService.AddCook(cook);
-        return CreatedAtAction(nameof(Get), new { id = createdCook.CookId }, createdCook);
+        return CreatedAtAction(nameof(AddCook), new { id = createdCook.CookId }, createdCook);
     }
 
     [HttpPut("{id}")]
-    public IActionResult Put(int id, Cook cook)
+    public IActionResult UpdateCook(int id, Cook cook)
     {
-        _logger.LogInformation("Cook called Put (PUT) with ID:{Id} and Cook:{@Cook} ", id, cook);
+        _logger.LogInformation("Operation: UpdateCook, Id: {Id}, Cook: {@Cook}", id, cook);
         if (!_cookService.UpdateCook(id, cook))
         {
+            _logger.LogWarning("Operation: UpdateCook, Id: {Id} not found.", id);
             return NotFound();
         }
 
@@ -59,12 +64,13 @@ public class CookController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    public IActionResult DeleteCook(int id)
     {
-        _logger.LogInformation("Cook called Delete (DELETE) with ID: {Id}", id);
+        _logger.LogInformation("Operation: DeleteCook, Id: {Id}", id);
 
         if (!_cookService.DeleteCook(id))
         {
+            _logger.LogWarning("Operation: DeleteCook, Id: {Id} not found.", id);
             return NotFound();
         }
 

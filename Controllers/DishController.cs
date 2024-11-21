@@ -11,9 +11,9 @@ namespace FoodAppG4.Controllers;
 public class DishController : ControllerBase
 {
     private readonly DishService _dishService;
-    private readonly ILogger<Assign1QueryController> _logger;
+    private readonly ILogger<DishController> _logger;
 
-    public DishController(DishService dishService, ILogger<Assign1QueryController> logger)
+    public DishController(DishService dishService, ILogger<DishController> logger)
     {
         _dishService = dishService;
         _logger = logger;
