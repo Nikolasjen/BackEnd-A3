@@ -22,6 +22,8 @@ namespace FoodAppG4.Controllers
         [HttpGet]
         public IActionResult GetAllCustomers()
         {
+            var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+            _logger.LogInformation("Operation: {Operation}, User: {User}", "GET", userName);
             var customers = _customerService.GetAllCustomers();
             return Ok(customers);
         }
@@ -29,9 +31,12 @@ namespace FoodAppG4.Controllers
         [HttpGet("{id}")]
         public IActionResult GetCustomerById(int id)
         {
+            var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+            _logger.LogInformation("Operation: {Operation}, User: {User}", "GET", userName);
             var customer = _customerService.GetCustomerById(id);
             if (customer == null)
             {
+                _logger.LogWarning("Operation: {Operation}, Id: {Id} not found, User: {User}", "GET", id, userName);
                 return NotFound();
             }
             return Ok(customer);
@@ -40,28 +45,34 @@ namespace FoodAppG4.Controllers
         [HttpPost]
         public IActionResult AddCustomer(Customer customer)
         {
-            _logger.LogInformation("Customer called AddCustomer (POST) with Customer:{@Customer} ", customer);
+            var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+            _logger.LogInformation("Operation: {Operation}, User: {User}, Customer: {@Customer}", "POST", userName, customer);
+
             var createdCustomer = _customerService.AddCustomer(customer);
-            return CreatedAtAction(nameof(GetCustomerById), new { id = createdCustomer.CustomerId }, createdCustomer);
+            return CreatedAtAction(nameof(GetAllCustomers), new { id = createdCustomer.CustomerId }, createdCustomer);
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateCustomer(int id, Customer customer)
+        public IActionResult UpdateCustomerById(int id, Customer customer)
         {
-            _logger.LogInformation("Customer called UpdateCustomer (PUT) with ID:{Id} and Customer:{@Customer} ", id, customer);
+            var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+            _logger.LogInformation("Operation: {Operation}, Id: {Id}, User: {User}, Customer: {@Customer}", "PUT", id, userName, customer);
             if (!_customerService.UpdateCustomer(id, customer))
             {
+                _logger.LogWarning("Operation: {Operation}, Id: {Id} not found, User: {User}", "PUT", id, userName);
                 return NotFound();
             }
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteCustomer(int id)
+        public IActionResult DeleteCustomerById(int id)
         {
-            _logger.LogInformation("Customer called DeleteCustomer (DELETE) with ID:{Id} ", id);
+            var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+            _logger.LogInformation("Operation: {Operation}, User: {User}", "DELETE", userName);
             if (!_customerService.DeleteCustomer(id))
             {
+                _logger.LogWarning("Operation: {Operation}, Id: {Id} not found, User: {User}", "DELETE", id, userName);
                 return NotFound();
             }
             return NoContent();

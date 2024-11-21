@@ -20,37 +20,45 @@ public class OrderDetailController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<OrderDetail>> Get()
+    public ActionResult<IEnumerable<OrderDetail>> GetAllOrderDetails()
     {
+        var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+        _logger.LogInformation("Operation: {Operation}, User: {User}", "GET", userName);
         var orderDetails = _orderDetailService.GetAllOrderDetails();
         return Ok(orderDetails);
     }
 
     [HttpGet("{id}")]
-    public ActionResult<OrderDetail> Get(int id)
+    public ActionResult<OrderDetail> GetOrderDetailById(int id)
     {
+        var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+        _logger.LogInformation("Operation: {Operation}, Id: {Id}, User: {User}", "GET", id, userName);
         var orderDetail = _orderDetailService.GetOrderDetailById(id);
         if (orderDetail == null)
         {
+            _logger.LogWarning("Operation: {Operation}, Id: {Id} not found, User: {User}", "GET", id, userName);
             return NotFound();
         }
         return Ok(orderDetail);
     }
 
     [HttpPost]
-    public ActionResult<OrderDetail> Post(OrderDetail orderDetail)
+    public ActionResult<OrderDetail> CreateOrderDetail(OrderDetail orderDetail)
     {
-        _logger.LogInformation("OrderDetail called Post (POST) with OrderDetail:{@OrderDetail} ", orderDetail);
+        var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+        _logger.LogInformation("Operation: {Operation}, User: {User}, OrderDetail: {@OrderDetail}", "POST", userName, orderDetail);
         var createdOrderDetail = _orderDetailService.AddOrderDetail(orderDetail);
-        return CreatedAtAction(nameof(Get), new { id = createdOrderDetail.OrderDetailId }, createdOrderDetail);
+        return CreatedAtAction(nameof(GetAllOrderDetails), new { id = createdOrderDetail.OrderDetailId }, createdOrderDetail);
     }
 
     [HttpPut("{id}")]
-    public IActionResult Put(int id, OrderDetail orderDetail)
+    public IActionResult UpdateOrderDetailById(int id, OrderDetail orderDetail)
     {
-        _logger.LogInformation("OrderDetail called Put (PUT) with ID:{Id} and OrderDetail:{@OrderDetail} ", id, orderDetail);
+        var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+        _logger.LogInformation("Operation: {Operation}, Id: {Id}, User: {User}, OrderDetail: {@OrderDetail}", "PUT", id, userName, orderDetail);
         if (!_orderDetailService.UpdateOrderDetail(id, orderDetail))
         {
+            _logger.LogWarning("Operation: {Operation}, Id: {Id} not found, User: {User}", "PUT", id, userName);
             return NotFound();
         }
 
@@ -58,11 +66,13 @@ public class OrderDetailController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    public IActionResult DeleteOrderDetailsById(int id)
     {
-        _logger.LogInformation("OrderDetail called Delete (DELETE) with ID:{Id} ", id);
+        var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+        _logger.LogInformation("Operation: {Operation}, Id: {Id}, User: {User}", "DELETE", id, userName);
         if (!_orderDetailService.DeleteOrderDetail(id))
         {
+            _logger.LogWarning("Operation: {Operation}, Id: {Id} not found, User: {User}", "DELETE", id, userName);
             return NotFound();
         }
 

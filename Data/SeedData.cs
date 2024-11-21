@@ -1,153 +1,126 @@
+using System;
+using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using FoodAppG4.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace FoodAppG4.Data
 {
-    public class SeedData
+    public static class SeedData
     {
-
-        public static void SeedUsers(UserManager<ApiUser> userManager)
+        /// <summary>
+        /// Asynchronously seeds users into the database. If a user already exists, it is removed before being re-created.
+        /// </summary>
+        /// <param name="userManager">The UserManager instance for managing users.</param>
+        /// <returns>A Task representing the asynchronous operation.</returns>
+        public static async Task SeedUsersAsync(UserManager<ApiUser> userManager)
         {
             if (userManager == null)
                 throw new ArgumentNullException(nameof(userManager));
 
-            // var user0_del = userManager.FindByNameAsync("Admin@localhost").Result;
-            // if (user0_del != null)
-            //     userManager.DeleteAsync(user0_del);
-
-
-
-            // Add Admin User
-            const string adminEmail = "Admin@localhost";
-            const string adminPassword = "Secret7$";
-            if (userManager.FindByNameAsync(adminEmail).Result == null)
+            // Define users to seed
+            var users = new[]
             {
-                var user = new ApiUser();
-                user.UserName = adminEmail;
-                user.Email = adminEmail;
-                user.EmailConfirmed = true;
-                IdentityResult result = userManager.CreateAsync(user, adminPassword).Result;
-                if (result.Succeeded)
+                new
                 {
-                    var adminUser = userManager.FindByNameAsync(adminEmail).Result;
-                    if (adminUser == null)
+                    Email = "Admin@localhost",
+                    Password = "Secret7$",
+                    Claims = new[]
                     {
-                        throw new Exception("Failed to find user1");
+                        new Claim("IsAdmin", "true")
                     }
-                    var claim = new Claim("IsAdmin", "true");
-                    var claimAdded = userManager.AddClaimAsync(adminUser, claim).Result;
-
-                    if (!claimAdded.Succeeded)
+                },
+                new
+                {
+                    Email = "Manager@localhost",
+                    Password = "Secret7$",
+                    Claims = new[]
                     {
-                        throw new Exception("Failed to add claim to admin user");
+                        new Claim("IsManager", "true")
+                    }
+                },
+                new
+                {
+                    Email = "cook@localhost",
+                    Password = "Secret7$",
+                    Claims = new[]
+                    {
+                        new Claim("IsCook", "true"),
+                        new Claim("CookId", "1")
+                    }
+                },
+                new
+                {
+                    Email = "cyclist@localhost",
+                    Password = "Secret7$",
+                    Claims = new[]
+                    {
+                        new Claim("IsCyclist", "true"),
+                        new Claim("CyclistId", "1")
+                    }
+                },
+                new
+                {
+                    Email = "noRights@localhost",
+                    Password = "Secret7$",
+                    Claims = Array.Empty<Claim>() // No special claims
+                }
+            };
+
+            foreach (var userInfo in users)
+            {
+                // Attempt to find the user by email
+                var existingUser = await userManager.FindByEmailAsync(userInfo.Email);
+                if (existingUser != null)
+                {
+                    // Delete the existing user
+                    var deleteResult = await userManager.DeleteAsync(existingUser);
+                    if (!deleteResult.Succeeded)
+                    {
+                        throw new Exception($"Failed to delete existing user: {userInfo.Email}. Errors: {string.Join(", ", deleteResult.Errors.Select(e => e.Description))}");
                     }
                 }
-            }
 
-            // Add Manager User
-            const string managerEmail = "Manager@localhost";
-            const string managerPassword = "Secret7$";
-            if (userManager.FindByNameAsync(managerEmail).Result == null)
-            {
-                var user2 = new ApiUser();
-                user2.UserName = managerEmail;
-                user2.Email = managerEmail;
-                user2.EmailConfirmed = true;
-                IdentityResult result2 = userManager.CreateAsync(user2, managerPassword).Result;
-                if (result2.Succeeded)
+                // Create a new user
+                var newUser = new ApiUser
                 {
-                    var managerUser = userManager.FindByNameAsync(managerEmail).Result;
-                    if (managerUser == null)
-                    {
-                        throw new Exception("Failed to find manager");
-                    }
-                    var claim = new Claim("IsManager", "true");
-                    var claimAdded = userManager.AddClaimAsync(managerUser, claim).Result;
+                    UserName = userInfo.Email,
+                    Email = userInfo.Email,
+                    EmailConfirmed = true
+                };
 
-                    if (!claimAdded.Succeeded)
-                    {
-                        throw new Exception("Failed to add claim to manager user");
-                    }
+                // For users with specific IDs (e.g., CookId, CyclistId), set them accordingly
+                if (userInfo.Claims.Any(c => c.Type == "CookId"))
+                {
+                    newUser.CookId = int.Parse(userInfo.Claims.First(c => c.Type == "CookId").Value);
                 }
-            }
 
-            // Add Cook User
-            const string cookEmail = "cook@localhost";
-            const string cookPassword = "Secret7$";
-            if (userManager.FindByNameAsync(cookEmail).Result == null)
-            {
-                var user3 = new ApiUser();
-                user3.UserName = cookEmail;
-                user3.Email = cookEmail;
-                user3.EmailConfirmed = true;
-                user3.CookId = 1;
-                IdentityResult result3 = userManager.CreateAsync(user3, cookPassword).Result;
-                if (result3.Succeeded)
+                if (userInfo.Claims.Any(c => c.Type == "CyclistId"))
                 {
-                    var cookUser = userManager.FindByNameAsync(cookEmail).Result;
-                    if (cookUser == null)
-                    {
-                        throw new Exception("Failed to find cook user");
-                    }
-                    var claim = new Claim("IsCook", "true");
-                    var claim2 = new Claim("CookId", user3.CookId.ToString() ?? string.Empty);
-                    var claimAdded = userManager.AddClaimAsync(cookUser, claim).Result;
-                    var claimAdded2 = userManager.AddClaimAsync(cookUser, claim2).Result;
-
-                    if (!claimAdded.Succeeded || !claimAdded2.Succeeded)
-                    {
-                        throw new Exception("Failed to add claims to cook user");
-                    }
+                    newUser.CyclistId = int.Parse(userInfo.Claims.First(c => c.Type == "CyclistId").Value);
                 }
-            }
 
-            // Add Cyclist User
-            const string cyclistEmail = "cyclist@localhost";
-            const string cyclistPassword = "Secret7$";
-            if (userManager.FindByNameAsync(cyclistEmail).Result == null)
-            {
-                var user3 = new ApiUser();
-                user3.UserName = cyclistEmail;
-                user3.Email = cyclistEmail;
-                user3.EmailConfirmed = true;
-                user3.CyclistId = 1;
-                IdentityResult result3 = userManager.CreateAsync(user3, cyclistPassword).Result;
-                if (result3.Succeeded)
+                var createResult = await userManager.CreateAsync(newUser, userInfo.Password);
+                if (!createResult.Succeeded)
                 {
-                    var cyclistUser = userManager.FindByNameAsync(cyclistEmail).Result;
-                    if (cyclistUser == null)
-                    {
-                        throw new Exception("Failed to find cyclist user");
-                    }
-                    var claim = new Claim("IsCyclist", "true");
-                    var claim2 = new Claim("CyclistId", user3.CyclistId.ToString() ?? string.Empty);
-                    var claimAdded = userManager.AddClaimAsync(cyclistUser, claim).Result;
-                    var claimAdded2 = userManager.AddClaimAsync(cyclistUser, claim2).Result;
-
-                    if (!claimAdded.Succeeded || !claimAdded2.Succeeded)
-                    {
-                        throw new Exception("Failed to add claims to cyclist user");
-                    }
+                    throw new Exception($"Failed to create user: {userInfo.Email}. Errors: {string.Join(", ", createResult.Errors.Select(e => e.Description))}");
                 }
-            }
 
-            // Add Cyclist User
-            const string noRightsEmail = "noRights@localhost";
-            const string noRightsPassword = "Secret7$";
-            if (userManager.FindByNameAsync(noRightsEmail).Result == null)
-            {
-                var user3 = new ApiUser();
-                user3.UserName = noRightsEmail;
-                user3.Email = noRightsEmail;
-                user3.EmailConfirmed = true;
-                IdentityResult result3 = userManager.CreateAsync(user3, noRightsPassword).Result;
-                if (result3.Succeeded)
+                // Retrieve the newly created user
+                var createdUser = await userManager.FindByEmailAsync(userInfo.Email);
+                if (createdUser == null)
                 {
-                    var cyclistUser = userManager.FindByNameAsync(noRightsEmail).Result;
-                    if (cyclistUser == null)
+                    throw new Exception($"Failed to retrieve user after creation: {userInfo.Email}");
+                }
+
+                // Add claims to the user
+                if (userInfo.Claims.Any())
+                {
+                    var addClaimsResult = await userManager.AddClaimsAsync(createdUser, userInfo.Claims);
+                    if (!addClaimsResult.Succeeded)
                     {
-                        throw new Exception("Failed to find noRights user");
+                        throw new Exception($"Failed to add claims to user: {userInfo.Email}. Errors: {string.Join(", ", addClaimsResult.Errors.Select(e => e.Description))}");
                     }
                 }
             }

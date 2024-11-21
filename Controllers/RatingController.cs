@@ -20,37 +20,45 @@ public class RatingController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<Rating>> Get()
+    public ActionResult<IEnumerable<Rating>> GetAllRatings()
     {
+        var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+        _logger.LogInformation("Operation: {Operation}, User: {User}", "GET", userName);
         var ratings = _ratingService.GetAllRatings();
         return Ok(ratings);
     }
 
     [HttpGet("{id}")]
-    public ActionResult<Rating> Get(int id)
+    public ActionResult<Rating> GetRatingById(int id)
     {
+        var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+        _logger.LogInformation("Operation: {Operation}, Id: {Id}, User: {User}", "GET", id, userName);
         var rating = _ratingService.GetRatingById(id);
         if (rating == null)
         {
+            _logger.LogWarning("Operation: {Operation}, Id: {Id} not found, User: {User}", "GET", id, userName);
             return NotFound();
         }
         return Ok(rating);
     }
 
     [HttpPost]
-    public ActionResult<Rating> Post(Rating rating)
+    public ActionResult<Rating> CreateRating(Rating rating)
     {
-        _logger.LogInformation("Rating called Post (POST) with Rating:{@Rating} ", rating);
+        var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+        _logger.LogInformation("Operation: {Operation}, User: {User}, Rating: {@Rating}", "POST", userName, rating);
         var createdRating = _ratingService.AddRating(rating);
-        return CreatedAtAction(nameof(Get), new { id = createdRating.RatingId }, createdRating);
+        return CreatedAtAction(nameof(GetAllRatings), new { id = createdRating.RatingId }, createdRating);
     }
 
     [HttpPut("{id}")]
-    public IActionResult Put(int id, Rating rating)
+    public IActionResult UpdateRatingById(int id, Rating rating)
     {
-        _logger.LogInformation("Rating called Put (PUT) with ID:{Id} and Rating:{@Rating} ", id, rating);
+        var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+        _logger.LogInformation("Operation: {Operation}, Id: {Id}, User: {User}, Rating: {@Rating}", "PUT", id, userName, rating);
         if (!_ratingService.UpdateRating(id, rating))
         {
+            _logger.LogWarning("Operation: {Operation}, Id: {Id} not found, User: {User}", "PUT", id, userName);
             return NotFound();
         }
 
@@ -58,11 +66,13 @@ public class RatingController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    public IActionResult DeleteRatingById(int id)
     {
-        _logger.LogInformation("Rating called Delete (DELETE) with ID:{Id} ", id);
+        var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+        _logger.LogInformation("Operation: {Operation}, Id: {Id}, User: {User}", "DELETE", id, userName);
         if (!_ratingService.DeleteRating(id))
         {
+            _logger.LogWarning("Operation: {Operation}, Id: {Id} not found, User: {User}", "DELETE", id, userName);
             return NotFound();
         }
 

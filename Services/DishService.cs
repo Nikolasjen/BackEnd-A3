@@ -13,7 +13,7 @@ public class DishService
         _context = context;
     }
 
-    public IEnumerable<Dish> GetAllDishs()
+    public IEnumerable<Dish> GetAllDishes()
     {
         return _context.Dishes.ToList();
     }

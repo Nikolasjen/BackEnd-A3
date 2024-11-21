@@ -12,14 +12,13 @@ namespace FoodAppG4.Controllers
     {
         private readonly QueryService _queryService;
         private readonly CookService _cookService;
-        // private readonly ILogger<Assign1QueryController> _logger;
+        private readonly ILogger<Assign1QueryController> _logger;
 
-        // public Assign1QueryController(QueryService queryService, CookService cookService, ILogger<Assign1QueryController> logger)
-        public Assign1QueryController(QueryService queryService, CookService cookService)
+        public Assign1QueryController(QueryService queryService, CookService cookService, ILogger<Assign1QueryController> logger)
         {
             _queryService = queryService;
             _cookService = cookService;
-            // _logger = logger;
+            _logger = logger;
         }
 
         // C.1: Get data for each cook
@@ -28,7 +27,8 @@ namespace FoodAppG4.Controllers
         [Authorize(Policy = "AdminOrManagerOnly")]
         public IActionResult GetCookData()
         {
-            // _logger.LogInformation("GET called GetCookData");
+            var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+            _logger.LogInformation("Operation: {Operation}, User: {User}", "GET", userName);
 
             var cooks = _queryService.GetCookData();
             return Ok(cooks);
@@ -40,7 +40,8 @@ namespace FoodAppG4.Controllers
         [AllowAnonymous]
         public IActionResult GetDishDetailsForCook(int cookId)
         {
-            // _logger.LogInformation("GET called GetDishDetailsForCook with ID:{} ", cookId);
+            var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+            _logger.LogInformation("Operation: {Operation}, Id: {Id}, User: {User}", "GET", cookId, userName);
 
             var dishes = _queryService.GetDishDetailsForCook(cookId);
             return Ok(dishes);
@@ -50,6 +51,9 @@ namespace FoodAppG4.Controllers
         [HttpGet("c3_orders/{orderId}")]
         public IActionResult GetOrderDetails(int orderId)
         {
+            var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+            _logger.LogInformation("Operation: {Operation}, Id: {Id}, User: {User}", "GET", orderId, userName);
+
             var orderDetails = _queryService.GetOrderDetails(orderId);
             return Ok(orderDetails);
         }
@@ -58,6 +62,9 @@ namespace FoodAppG4.Controllers
         [HttpGet("c4_trips/{tripId}")]
         public IActionResult GetTripDetails(int tripId)
         {
+            var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+            _logger.LogInformation("Operation: {Operation}, Id: {Id}, User: {User}", "GET", tripId, userName);
+
             var tripDetails = _queryService.GetTripDetails(tripId);
             return Ok(tripDetails);
         }
@@ -97,6 +104,9 @@ namespace FoodAppG4.Controllers
                 return NotFound();
             }
 
+            var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+            _logger.LogInformation("Operation: {Operation}, Id: {Id}, User: {User}", "GET", cookId, userName);
+
             return Ok(rating);
         }
 
@@ -104,6 +114,9 @@ namespace FoodAppG4.Controllers
         [HttpGet("c5_1_ratings/cyclists")]
         public IActionResult GetAverageRatingForCyclists()
         {
+            var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+            _logger.LogInformation("Operation: {Operation}, User: {User}", "GET", userName);
+
             var ratings = _queryService.GetAverageRatingForCyclists();
             return Ok(ratings);
         }
@@ -112,6 +125,9 @@ namespace FoodAppG4.Controllers
         [HttpGet("c5_2_ratings/cyclist/{cyclistId}")]
         public IActionResult GetRatingsForCyclist(int cyclistId)
         {
+            var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+            _logger.LogInformation("Operation: {Operation}, Id: {Id}, User: {User}", "GET", cyclistId, userName);
+
             var ratings = _queryService.GetRatingsForCyclist(cyclistId);
             return Ok(ratings);
         }
@@ -121,6 +137,9 @@ namespace FoodAppG4.Controllers
         [Authorize(Policy = "AdminOrCyclistOnly")]
         public IActionResult GetMonthlyHoursAndEarnings(int cyclistId)
         {
+            var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+            _logger.LogInformation("Operation: {Operation}, Id: {Id}, User: {User}", "GET", cyclistId, userName);
+
             // Retrieve the IsAdmin claim
             var isAdmin = User.HasClaim("IsAdmin", "true");
 
@@ -141,8 +160,7 @@ namespace FoodAppG4.Controllers
                     return Unauthorized("You are not authorized to view this data.");
                 }
             }
-
-
+            
 
             var earnings = _queryService.GetMonthlyHoursAndEarnings(cyclistId);
 
@@ -159,6 +177,9 @@ namespace FoodAppG4.Controllers
         [Authorize(Policy = "AdminOrManagerOnly")]
         public IActionResult GetCyclistData()
         {
+            var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+            _logger.LogInformation("Operation: {Operation}, User: {User}", "GET", userName);
+
             var data = _queryService.GetCyclistData();
             return Ok(data);
         }

@@ -1,5 +1,6 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using System;
 using System.Collections.Generic;
 
 namespace FoodAppG4.LoggingLevels
@@ -10,7 +11,7 @@ namespace FoodAppG4.LoggingLevels
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string? Id { get; set; }
-        
+
         [BsonElement("Level")]
         public string Level { get; set; } = "";
 
@@ -19,6 +20,9 @@ namespace FoodAppG4.LoggingLevels
 
         [BsonElement("Properties")]
         public Dictionary<string, object> Properties { get; set; } = new Dictionary<string, object>();
+
+        [BsonElement("Operation")]
+        public string Operation { get; set; } = "";
 
         public bool LevelEquals(string level)
         {

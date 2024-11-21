@@ -20,37 +20,45 @@ public class OrderController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<Order>> Get()
+    public ActionResult<IEnumerable<Order>> GetAllOrders()
     {
+        var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+        _logger.LogInformation("Operation: {Operation}, User: {User}", "GET", userName);
         var orders = _orderService.GetAllOrders();
         return Ok(orders);
     }
 
     [HttpGet("{id}")]
-    public ActionResult<Order> Get(int id)
+    public ActionResult<Order> GetOrderById(int id)
     {
+        var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+        _logger.LogInformation("Operation: {Operation}, Id: {Id}, User: {User}", "GET", id, userName);
         var order = _orderService.GetOrderById(id);
         if (order == null)
         {
+            _logger.LogWarning("Operation: {Operation}, Id: {Id} not found, User: {User}", "GET", id, userName);
             return NotFound();
         }
         return Ok(order);
     }
 
     [HttpPost]
-    public ActionResult<Order> Post(Order order)
+    public ActionResult<Order> CreateOrder(Order order)
     {
-        _logger.LogInformation("Order called Post (POST) with Order:{@Order} ", order);
+        var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+        _logger.LogInformation("Operation: {Operation}, User: {User}, Order: {@Order}", "POST", userName, order); 
         var createdOrder = _orderService.AddOrder(order);
-        return CreatedAtAction(nameof(Get), new { id = createdOrder.OrderId }, createdOrder);
+        return CreatedAtAction(nameof(GetAllOrders), new { id = createdOrder.OrderId }, createdOrder);
     }
 
     [HttpPut("{id}")]
-    public IActionResult Put(int id, Order order)
+    public IActionResult UpdateOrder(int id, Order order)
     {
-        _logger.LogInformation("Order called Put (PUT) with ID:{Id} and Order:{@Order} ", id, order);
+        var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+        _logger.LogInformation("Operation: {Operation}, Id: {Id}, User: {User}, Order: {@Order}", "PUT", id, userName, order);
         if (!_orderService.UpdateOrder(id, order))
         {
+            _logger.LogWarning("Operation: {Operation}, Id: {Id} not found, User: {User}", "PUT", id, userName);
             return NotFound();
         }
 
@@ -58,11 +66,13 @@ public class OrderController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    public IActionResult DeleteOrderById(int id)
     {
-        _logger.LogInformation("Order called Delete (DELETE) with ID:{Id} ", id);
+        var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+        _logger.LogInformation("Operation: {Operation}, Id: {Id}, User: {User}", "DELETE", id, userName);
         if (!_orderService.DeleteOrder(id))
         {
+            _logger.LogWarning("Operation: {Operation}, Id: {Id} not found, User: {User}", "DELETE", id, userName);
             return NotFound();
         }
 

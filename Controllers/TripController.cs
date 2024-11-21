@@ -20,37 +20,45 @@ public class TripController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<Trip>> Get()
+    public ActionResult<IEnumerable<Trip>> GetAllTrips()
     {
+        var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+        _logger.LogInformation("Operation: {Operation}, User: {User}", "GET", userName);
         var trips = _tripService.GetAllTrips();
         return Ok(trips);
     }
 
     [HttpGet("{id}")]
-    public ActionResult<Trip> Get(int id)
+    public ActionResult<Trip> GetTripById(int id)
     {
+        var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+        _logger.LogInformation("Operation: {Operation}, Id: {Id}, User: {User}", "GET", id, userName);
         var trip = _tripService.GetTripById(id);
         if (trip == null)
         {
+            _logger.LogWarning("Operation: {Operation}, Id: {Id} not found, User: {User}", "GET", id, userName);
             return NotFound();
         }
         return Ok(trip);
     }
 
     [HttpPost]
-    public ActionResult<Trip> Post(Trip trip)
+    public ActionResult<Trip> CreateTrip(Trip trip)
     {
-        _logger.LogInformation("Trip called Post (POST) with Trip:{@Trip} ", trip);
+        var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+        _logger.LogInformation("Operation: {Operation}, User: {User}, Trip: {@Trip}", "POST", userName, trip);
         var createdTrip = _tripService.AddTrip(trip);
-        return CreatedAtAction(nameof(Get), new { id = createdTrip.TripId }, createdTrip);
+        return CreatedAtAction(nameof(GetAllTrips), new { id = createdTrip.TripId }, createdTrip);
     }
 
     [HttpPut("{id}")]
-    public IActionResult Put(int id, Trip trip)
+    public IActionResult UpdateTripById(int id, Trip trip)
     {
-        _logger.LogInformation("Trip called Put (PUT) with ID:{Id} and Trip:{@Trip} ", id, trip);
+        var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+        _logger.LogInformation("Operation: {Operation}, Id: {Id}, User: {User}, Trip: {@Trip}", "PUT", id, userName, trip);
         if (!_tripService.UpdateTrip(id, trip))
         {
+            _logger.LogWarning("Operation: {Operation}, Id: {Id} not found, User: {User}", "PUT", id, userName);
             return NotFound();
         }
 
@@ -58,11 +66,13 @@ public class TripController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    public IActionResult DeleteTripById(int id)
     {
-        _logger.LogInformation("Trip called Delete (DELETE) with ID:{Id} ", id);
+        var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+        _logger.LogInformation("Operation: {Operation}, Id: {Id}, User: {User}", "DELETE", id, userName);
         if (!_tripService.DeleteTrip(id))
         {
+            _logger.LogWarning("Operation: {Operation}, Id: {Id} not found, User: {User}", "DELETE", id, userName);
             return NotFound();
         }
 

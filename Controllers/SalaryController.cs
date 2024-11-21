@@ -20,37 +20,45 @@ public class SalaryController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<Salary>> Get()
+    public ActionResult<IEnumerable<Salary>> GetAllSalaries()
     {
+        var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+        _logger.LogInformation("Operation: {Operation}, User: {User}", "GET", userName);
         var salarys = _salaryService.GetAllSalarys();
         return Ok(salarys);
     }
 
     [HttpGet("{id}")]
-    public ActionResult<Salary> Get(int id)
+    public ActionResult<Salary> GetSalaryById(int id)
     {
+        var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+        _logger.LogInformation("Operation: {Operation}, Id: {Id}, User: {User}", "GET", id, userName);
         var salary = _salaryService.GetSalaryById(id);
         if (salary == null)
         {
+            _logger.LogWarning("Operation: {Operation}, Id: {Id} not found, User: {User}", "GET", id, userName);
             return NotFound();
         }
         return Ok(salary);
     }
 
     [HttpPost]
-    public ActionResult<Salary> Post(Salary salary)
+    public ActionResult<Salary> CreateSalary(Salary salary)
     {
-        _logger.LogInformation("Salary called Post (POST) with Salary:{@Salary} ", salary);
+        var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+        _logger.LogInformation("Operation: {Operation}, User: {User}, Salary: {@Salary}", "POST", userName, salary);
         var createdSalary = _salaryService.AddSalary(salary);
-        return CreatedAtAction(nameof(Get), new { id = createdSalary.SalaryId }, createdSalary);
+        return CreatedAtAction(nameof(GetAllSalaries), new { id = createdSalary.SalaryId }, createdSalary);
     }
 
     [HttpPut("{id}")]
-    public IActionResult Put(int id, Salary salary)
+    public IActionResult UpdateSalaryById(int id, Salary salary)
     {
-        _logger.LogInformation("Salary called Put (PUT) with ID:{Id} and Salary:{@Salary} ", id, salary);
+        var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+        _logger.LogInformation("Operation: {Operation}, Id: {Id}, User: {User}, Salary: {@Salary}", "PUT", id, userName, salary);
         if (!_salaryService.UpdateSalary(id, salary))
         {
+            _logger.LogWarning("Operation: {Operation}, Id: {Id} not found, User: {User}", "PUT", id, userName);
             return NotFound();
         }
 
@@ -58,11 +66,13 @@ public class SalaryController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    public IActionResult DeleteSalaryById(int id)
     {
-        _logger.LogInformation("Salary called Delete (DELETE) with ID:{Id} ", id);
+        var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+        _logger.LogInformation("Operation: {Operation}, Id: {Id}, User: {User}", "DELETE", id, userName);
         if (!_salaryService.DeleteSalary(id))
         {
+            _logger.LogWarning("Operation: {Operation}, Id: {Id} not found, User: {User}", "DELETE", id, userName);
             return NotFound();
         }
 

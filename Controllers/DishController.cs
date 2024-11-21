@@ -20,19 +20,23 @@ public class DishController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<Dish>> Get()
+    public ActionResult<IEnumerable<Dish>> GetAllDishes()
     {
-        _logger.LogInformation("Dish called Get (GET)");
-        var dishs = _dishService.GetAllDishs();
+        var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+        _logger.LogInformation("Operation: {Operation}, User: {User}", "GET", userName);
+        var dishs = _dishService.GetAllDishes();
         return Ok(dishs);
     }
 
     [HttpGet("{id}")]
-    public ActionResult<Dish> Get(int id)
+    public ActionResult<Dish> GetDishById(int id)
     {
+        var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+        _logger.LogInformation("Operation: {Operation}, Id: {Id}, User: {User}", "GET", id, userName);
         var dish = _dishService.GetDishById(id);
         if (dish == null)
         {
+            _logger.LogWarning("Operation: {Operation}, Id: {Id} not found, User: {User}", "GET", id, userName);
             return NotFound();
         }
         return Ok(dish);
@@ -42,23 +46,26 @@ public class DishController : ControllerBase
     [HttpPost]
     public IActionResult AddDish(Dish dish)
     {
-        _logger.LogInformation("Dish called AddDish (POST) with Dish:{@Dish} ", dish);
+        var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+        _logger.LogInformation("Operation: {Operation}, User: {User}, Dish: {@Dish}", "POST", userName, dish);
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
         var createdDish = _dishService.AddDish(dish);
-        return CreatedAtAction(nameof(Get), new { id = createdDish.DishId }, createdDish);
+        return CreatedAtAction(nameof(GetAllDishes), new { id = createdDish.DishId }, createdDish);
     }
 
 
     [HttpPut("{id}")]
     public IActionResult Put(int id, Dish dish)
     {
-        _logger.LogInformation("Dish called Put (PUT) with ID:{Id} and Dish:{@Dish} ", id, dish);
+        var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+        _logger.LogInformation("Operation: {Operation}, Id: {Id}, User: {User}, Dish: {@Dish}", "PUT", id, userName, dish);
         if (!_dishService.UpdateDish(id, dish))
         {
+            _logger.LogWarning("Operation: {Operation}, Id: {Id} not found, User: {User}", "PUT", id, userName);
             return NotFound();
         }
 
@@ -68,9 +75,11 @@ public class DishController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
-        _logger.LogInformation("Dish called Delete (DELETE) with ID: {Id}", id);
+        var userName = (User.Identity?.Name ?? "Unknown").ToLower();
+        _logger.LogInformation("Operation: {Operation}, Id: {Id}, User: {User}", "DELETE", id, userName);
         if (!_dishService.DeleteDish(id))
         {
+            _logger.LogWarning("Operation: {Operation}, Id: {Id} not found, User: {User}", "DELETE", id, userName);
             return NotFound();
         }
 

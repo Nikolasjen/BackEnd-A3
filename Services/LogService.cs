@@ -1,7 +1,9 @@
 using FoodAppG4.LoggingLevels;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace FoodAppG4.Services
@@ -16,33 +18,60 @@ namespace FoodAppG4.Services
             _logsCollection = database.GetCollection<LogEntry>("log");
         }
 
-        public async Task<List<LogEntry>> GetAsync()
-        {
-            // Get all log entries​
-            var filter = Builders<LogEntry>.Filter.Empty;
-            var count = await _logsCollection.CountDocumentsAsync(filter);
-            Console.WriteLine("Number of documents found: " + count);
-            return await _logsCollection.Find(filter).ToListAsync();
-        }
-
-        public async Task<List<LogEntry>> GetAsync(string operation)
-        {
-            // Build filter for Level "Information" and matching Operation
-            var filterBuilder = Builders<LogEntry>.Filter;
-            var filter = filterBuilder.Eq(x => x.Level, "Information") &
-                         filterBuilder.Eq("Properties.Operation", operation);
-
-            return await _logsCollection.Find(filter).ToListAsync();
-        }
-
-        // Optional: Additional methods for more flexible queries
-        public async Task<List<LogEntry>> GetAsync(string operation, string level)
+        /// <summary>
+        /// Searches logs based on user, operation, and time interval.
+        /// </summary>
+        /// <param name="user">Username to filter logs by user.</param>
+        /// <param name="operation">Operation type to filter (e.g., CreateCook).</param>
+        /// <param name="startDate">Start of the time interval.</param>
+        /// <param name="endDate">End of the time interval.</param>
+        /// <returns>List of filtered LogEntry objects.</returns>
+        public async Task<List<LogEntry>> SearchLogsAsync(
+            string? user,
+            string? operation,
+            DateTime? startDate,
+            DateTime? endDate)
         {
             var filterBuilder = Builders<LogEntry>.Filter;
-            var filter = filterBuilder.Eq(x => x.Level, level) &
-                         filterBuilder.Eq("Properties.Operation", operation);
+            var filters = new List<FilterDefinition<LogEntry>>();
 
-            return await _logsCollection.Find(filter).ToListAsync();
+            // Filter by user if provided (case-insensitive)
+            if (!string.IsNullOrEmpty(user))
+            {
+                var regex = new BsonRegularExpression($"^{Regex.Escape(user)}$", "i"); // ^ and $ for exact match
+                filters.Add(filterBuilder.Regex("Properties.User", regex));
+            }
+
+            // Filter by operation if provided (case-insensitive)
+            if (!string.IsNullOrEmpty(operation))
+            {
+                var regex = new BsonRegularExpression($"^{Regex.Escape(operation)}$", "i");
+                filters.Add(filterBuilder.Regex("Properties.Operation", regex));
+            }
+
+            // Filter by start date if provided
+            if (startDate.HasValue)
+            {
+                filters.Add(filterBuilder.Gte(x => x.UtcTimeStamp, startDate.Value));
+            }
+
+            // Filter by end date if provided
+            if (endDate.HasValue)
+            {
+                filters.Add(filterBuilder.Lte(x => x.UtcTimeStamp, endDate.Value));
+            }
+
+            // Combine all filters
+            var combinedFilter = filters.Count > 0 ? filterBuilder.And(filters) : filterBuilder.Empty;
+
+            // Optional: Define a maximum limit to prevent excessively large responses
+            const int maxLogs = 1000;
+
+            // Execute the query with sorting and limit
+            return await _logsCollection.Find(combinedFilter)
+                                        .SortByDescending(x => x.UtcTimeStamp)
+                                        .Limit(maxLogs)
+                                        .ToListAsync();
         }
     }
 }
