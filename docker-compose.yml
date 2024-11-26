@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   mongo:
     image: mongo:latest
@@ -42,8 +40,9 @@ services:
       JWT__Issuer: "FoodApp_G4"
       JWT__Audience: "FoodApp_G4"
       JWT__SigningKey: "MyVeryOwnTestSigningKey123123412345$"
+      Serilog__WriteTo__0__Args__databaseUrl: "mongodb://mongo:27017/FoodAppLogs"
     ports:
-      - "5000:80"
+      - "5035:80"
 
 volumes:
   mongo-data:
