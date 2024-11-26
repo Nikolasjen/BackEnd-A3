@@ -1,0 +1,385 @@
+{
+	"id": "0ed5ca08-84e3-470f-9cb9-187734ed8106",
+	"name": "Ass1Queries",
+	"timestamp": "2024-11-26T15:58:05.815Z",
+	"collection_id": "39966883-539a0418-9333-40d2-9c37-bfb428b58b19",
+	"folder_id": 0,
+	"environment_id": "39966883-be597a4a-640c-4444-9978-7252e2942f58",
+	"totalPass": 23,
+	"delay": 0,
+	"persist": true,
+	"status": "finished",
+	"startedAt": "2024-11-26T15:58:04.416Z",
+	"totalFail": 0,
+	"results": [
+		{
+			"id": "58ad4b4f-bf85-4700-8c80-9400c2d1a87a",
+			"name": "c1_cooks",
+			"url": "http://localhost:5035/api/Assign1Query/c1_cooks",
+			"time": 2,
+			"responseCode": {
+				"code": 403,
+				"name": "Forbidden"
+			},
+			"tests": {
+				"Response time is less than 200ms": true,
+				"[cook] failed to gain access": true,
+				"[cook] should explicitly fail": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 200ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"[cook] failed to gain access": {
+					"pass": 1,
+					"fail": 0
+				},
+				"[cook] should explicitly fail": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				2
+			],
+			"allTests": [
+				{
+					"Response time is less than 200ms": true,
+					"[cook] failed to gain access": true,
+					"[cook] should explicitly fail": true
+				}
+			]
+		},
+		{
+			"id": "698a1094-bc1a-4909-8038-fbec6070b517",
+			"name": "c2_dishes",
+			"url": "http://localhost:5035/api/Assign1Query/c2_dishes/1",
+			"time": 5,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Response time is less than 200ms": true,
+				"[cook] should have access": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 200ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"[cook] should have access": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				5
+			],
+			"allTests": [
+				{
+					"Response time is less than 200ms": true,
+					"[cook] should have access": true
+				}
+			]
+		},
+		{
+			"id": "a04494db-dd6d-4d00-84f4-78bb37cd4715",
+			"name": "c3_orderid",
+			"url": "http://localhost:5035/api/Assign1Query/c3_orders/1",
+			"time": 6,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Response time is less than 200ms": true,
+				"[cook] should have access": true,
+				"[cook] should explicitly succeed": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 200ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"[cook] should have access": {
+					"pass": 1,
+					"fail": 0
+				},
+				"[cook] should explicitly succeed": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"Response time is less than 200ms": true,
+					"[cook] should have access": true,
+					"[cook] should explicitly succeed": true
+				}
+			]
+		},
+		{
+			"id": "37a684df-26b2-4d66-8b08-49bf0aa593c1",
+			"name": "c4_tripId",
+			"url": "http://localhost:5035/api/Assign1Query/c4_trips/2",
+			"time": 5,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Response time is less than 200ms": true,
+				"[cook] should have access": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 200ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"[cook] should have access": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				5
+			],
+			"allTests": [
+				{
+					"Response time is less than 200ms": true,
+					"[cook] should have access": true
+				}
+			]
+		},
+		{
+			"id": "e2e0e3a2-38cf-4b6d-8f3d-1b726bed3db9",
+			"name": "c5_cookratings",
+			"url": "http://localhost:5035/api/Assign1Query/c5_ratings/cook/2",
+			"time": 6,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {
+				"Response time is less than 200ms": true,
+				"[cook] failed to gain access": true,
+				"[cook] should explicitly fail": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 200ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"[cook] failed to gain access": {
+					"pass": 1,
+					"fail": 0
+				},
+				"[cook] should explicitly fail": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"Response time is less than 200ms": true,
+					"[cook] failed to gain access": true,
+					"[cook] should explicitly fail": true
+				}
+			]
+		},
+		{
+			"id": "8154e040-25a9-4804-a5d7-1e90d53ef4bf",
+			"name": "c5_AllCylistsRating",
+			"url": "http://localhost:5035/api/Assign1Query/c5_1_ratings/cyclists",
+			"time": 8,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Response time is less than 200ms": true,
+				"[cook] should have access": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 200ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"[cook] should have access": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"Response time is less than 200ms": true,
+					"[cook] should have access": true
+				}
+			]
+		},
+		{
+			"id": "0c73de0b-a41d-4c7b-8c9b-5a4d83b43f56",
+			"name": "c5_1CyclistRating",
+			"url": "http://localhost:5035/api/Assign1Query/c5_2_ratings/cyclist/2",
+			"time": 22,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Response time is less than 200ms": true,
+				"[cook] should have access": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 200ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"[cook] should have access": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				22
+			],
+			"allTests": [
+				{
+					"Response time is less than 200ms": true,
+					"[cook] should have access": true
+				}
+			]
+		},
+		{
+			"id": "33aebb0e-d4b0-4f83-8e96-6cf04baac183",
+			"name": "c6_cyclistEarnings",
+			"url": "http://localhost:5035/api/Assign1Query/c6_cyclist/1/earnings",
+			"time": 3,
+			"responseCode": {
+				"code": 403,
+				"name": "Forbidden"
+			},
+			"tests": {
+				"Response time is less than 200ms": true,
+				"[cook] failed to gain access": true,
+				"[cook] should explicitly fail": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 200ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"[cook] failed to gain access": {
+					"pass": 1,
+					"fail": 0
+				},
+				"[cook] should explicitly fail": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				3
+			],
+			"allTests": [
+				{
+					"Response time is less than 200ms": true,
+					"[cook] failed to gain access": true,
+					"[cook] should explicitly fail": true
+				}
+			]
+		},
+		{
+			"id": "90054ae5-95ce-436f-9f4e-c8425179c76c",
+			"name": "c7_cyclistsData",
+			"url": "http://localhost:5035/api/Assign1Query/c7_cyclists/data",
+			"time": 2,
+			"responseCode": {
+				"code": 403,
+				"name": "Forbidden"
+			},
+			"tests": {
+				"Response time is less than 200ms": true,
+				"[cook] failed to gain access": true,
+				"[cook] should explicitly fail": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 200ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"[cook] failed to gain access": {
+					"pass": 1,
+					"fail": 0
+				},
+				"[cook] should explicitly fail": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				2
+			],
+			"allTests": [
+				{
+					"Response time is less than 200ms": true,
+					"[cook] failed to gain access": true,
+					"[cook] should explicitly fail": true
+				}
+			]
+		}
+	],
+	"count": 1,
+	"totalTime": 59,
+	"collection": {
+		"requests": [
+			{
+				"id": "58ad4b4f-bf85-4700-8c80-9400c2d1a87a",
+				"method": "GET"
+			},
+			{
+				"id": "698a1094-bc1a-4909-8038-fbec6070b517",
+				"method": "GET"
+			},
+			{
+				"id": "a04494db-dd6d-4d00-84f4-78bb37cd4715",
+				"method": "GET"
+			},
+			{
+				"id": "37a684df-26b2-4d66-8b08-49bf0aa593c1",
+				"method": "GET"
+			},
+			{
+				"id": "e2e0e3a2-38cf-4b6d-8f3d-1b726bed3db9",
+				"method": "GET"
+			},
+			{
+				"id": "8154e040-25a9-4804-a5d7-1e90d53ef4bf",
+				"method": "GET"
+			},
+			{
+				"id": "0c73de0b-a41d-4c7b-8c9b-5a4d83b43f56",
+				"method": "GET"
+			},
+			{
+				"id": "33aebb0e-d4b0-4f83-8e96-6cf04baac183",
+				"method": "GET"
+			},
+			{
+				"id": "90054ae5-95ce-436f-9f4e-c8425179c76c",
+				"method": "GET"
+			}
+		]
+	}
+}

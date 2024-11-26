@@ -1,0 +1,1235 @@
+{
+	"info": {
+		"_postman_id": "539a0418-9333-40d2-9c37-bfb428b58b19",
+		"name": "Ass1Queries",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39966883"
+	},
+	"item": [
+		{
+			"name": "c1_cooks",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Retrieve and parse accountPermissions from the environment variable\r",
+							"const accountPermissions = JSON.parse(pm.environment.get(\"accountPermissions\"));\r",
+							"\r",
+							"// Get the current account type and its expected permissions\r",
+							"const accountType = pm.environment.get(\"accountType\");\r",
+							"const permissions = accountPermissions[accountType];\r",
+							"\r",
+							"// pm.test(\"Response status code is 200\", function () {\r",
+							"//   pm.expect(pm.response.code).to.equal(200);\r",
+							"// });\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"// Validate the response based on permissions\r",
+							"if (permissions.canAccess) {\r",
+							"    pm.test(`[${accountType}] should have access`, function () {\r",
+							"        pm.response.to.have.status(200); // Adjust for your success status\r",
+							"    });\r",
+							"} else {\r",
+							"    pm.test(`[${accountType}] failed to gain access`, function () {\r",
+							"        pm.response.to.have.status(403); // Adjust for your failure status\r",
+							"    });\r",
+							"}\r",
+							"\r",
+							"// Debug log for account type and expected access\r",
+							"console.log(`Account type: ${accountType}, Expected access: ${permissions.canAccess}`);\r",
+							"\r",
+							"// Add an additional check for explicit behavior based on account type\r",
+							"if (accountType === \"cyclist\" || accountType === \"NoRights\" || accountType === \"cook\") {\r",
+							"    pm.test(`[${accountType}] should explicitly fail`, function () {\r",
+							"        pm.expect(pm.response.code).to.equal(403);\r",
+							"    });\r",
+							"} else {\r",
+							"    pm.test(`[${accountType}] should explicitly succeed`, function () {\r",
+							"        pm.expect(pm.response.code).to.equal(200);\r",
+							"    });\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Define permissions for each account type\r",
+							"const accountPermissions = {\r",
+							"    admin: { canAccess: true },\r",
+							"    manager: { canAccess: true },\r",
+							"    cook: { canAccess: false },\r",
+							"    cyclist: { canAccess: false },\r",
+							"    NoRights: { canAccess: false },\r",
+							"};\r",
+							"\r",
+							"// Save the updated permissions to the environment variable\r",
+							"pm.environment.set(\"accountPermissions\", JSON.stringify(accountPermissions));\r",
+							"\r",
+							"// Get the current account type\r",
+							"const accountType = pm.environment.get(\"accountType\");\r",
+							"\r",
+							"// Debug: Log the updated permissions and account type\r",
+							"console.log(\"Updated accountPermissions:\", accountPermissions);\r",
+							"console.log(\"Current account type:\", accountType);\r",
+							"\r",
+							"// Debug: Check if permissions for the account type exist\r",
+							"if (!accountPermissions[accountType]) {\r",
+							"    console.error(`No permissions found for account type: ${accountType}`);\r",
+							"}\r",
+							"\r",
+							"// Send a request to get the token\r",
+							"pm.sendRequest({\r",
+							"    header: {\r",
+							"        \"Content-Type\": \"application/json\",\r",
+							"    },\r",
+							"    body: {\r",
+							"        mode: \"raw\",\r",
+							"        raw: JSON.stringify(pm.request.body),\r",
+							"    },\r",
+							"}, function (err, res) {\r",
+							"    if (err) {\r",
+							"        console.error(\"Error fetching token:\", err);\r",
+							"    } else {\r",
+							"        const token = res.json().token;\r",
+							"        pm.environment.set(\"bearerToken\", token);\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5035/api/Assign1Query/c1_cooks",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5035",
+					"path": [
+						"api",
+						"Assign1Query",
+						"c1_cooks"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "c2_dishes",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Define or update accountPermissions\r",
+							"const accountPermissions = {\r",
+							"    admin: { canAccess: true },\r",
+							"    manager: { canAccess: true },\r",
+							"    cook: { canAccess: true },\r",
+							"    cyclist: { canAccess: true },\r",
+							"    NoRights: { canAccess: true },\r",
+							"};\r",
+							"\r",
+							"// Save the updated permissions to the environment variable\r",
+							"pm.environment.set(\"accountPermissions\", JSON.stringify(accountPermissions));\r",
+							"\r",
+							"// Get the current account type\r",
+							"const accountType = pm.environment.get(\"accountType\");\r",
+							"\r",
+							"// Debug: Log the updated permissions and account type\r",
+							"console.log(\"Updated accountPermissions:\", accountPermissions);\r",
+							"console.log(\"Current account type:\", accountType);\r",
+							"\r",
+							"// Debug: Check if permissions for the account type exist\r",
+							"if (!accountPermissions[accountType]) {\r",
+							"    console.error(`No permissions found for account type: ${accountType}`);\r",
+							"}\r",
+							"\r",
+							"// Send a request to get the token\r",
+							"pm.sendRequest({\r",
+							"    header: {\r",
+							"        \"Content-Type\": \"application/json\",\r",
+							"    },\r",
+							"    body: {\r",
+							"        mode: \"raw\",\r",
+							"        raw: JSON.stringify(pm.request.body),\r",
+							"    },\r",
+							"}, function (err, res) {\r",
+							"    if (err) {\r",
+							"        console.error(\"Error fetching token:\", err);\r",
+							"    } else {\r",
+							"        const token = res.json().token;\r",
+							"        pm.environment.set(\"bearerToken\", token);\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Retrieve and parse accountPermissions from the environment variable\r",
+							"const accountPermissions = JSON.parse(pm.environment.get(\"accountPermissions\"));\r",
+							"\r",
+							"// Get the current account type and its expected permissions\r",
+							"const accountType = pm.environment.get(\"accountType\");\r",
+							"const permissions = accountPermissions[accountType];\r",
+							"\r",
+							"// pm.test(\"Response status code is 200\", function () {\r",
+							"//   pm.expect(pm.response.code).to.equal(200);\r",
+							"// });\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"// Validate the response based on permissions\r",
+							"if (permissions.canAccess) {\r",
+							"    pm.test(`[${accountType}] should have access`, function () {\r",
+							"        pm.response.to.have.status(200); // Adjust for your success status\r",
+							"    });\r",
+							"} else {\r",
+							"    pm.test(`[${accountType}] failed to gain access`, function () {\r",
+							"        pm.response.to.have.status(403); // Adjust for your failure status\r",
+							"    });\r",
+							"}\r",
+							"\r",
+							"// Debug log for account type and expected access\r",
+							"console.log(`Account type: ${accountType}, Expected access: ${permissions.canAccess}`);\r",
+							"\r",
+							"// Add an additional check for explicit behavior based on account type\r",
+							"// if (accountType === \"cyclist\" || accountType === \"NoRights\") {\r",
+							"//     pm.test(`[${accountType}] should explicitly fail`, function () {\r",
+							"//         pm.expect(pm.response.code).to.equal(403);\r",
+							"//     });\r",
+							"// } else {\r",
+							"//     pm.test(`[${accountType}] should explicitly succeed`, function () {\r",
+							"//         pm.expect(pm.response.code).to.equal(200);\r",
+							"//     });\r",
+							"// }\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5035/api/Assign1Query/c2_dishes/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5035",
+					"path": [
+						"api",
+						"Assign1Query",
+						"c2_dishes",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "c3_orderid",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Define or update accountPermissions\r",
+							"const accountPermissions = {\r",
+							"    admin: { canAccess: true },\r",
+							"    manager: { canAccess: true },\r",
+							"    cook: { canAccess: true },\r",
+							"    cyclist: { canAccess: true },\r",
+							"    NoRights: { canAccess: true },\r",
+							"};\r",
+							"\r",
+							"// Save the updated permissions to the environment variable\r",
+							"pm.environment.set(\"accountPermissions\", JSON.stringify(accountPermissions));\r",
+							"\r",
+							"// Get the current account type\r",
+							"const accountType = pm.environment.get(\"accountType\");\r",
+							"\r",
+							"// Debug: Log the updated permissions and account type\r",
+							"console.log(\"Updated accountPermissions:\", accountPermissions);\r",
+							"console.log(\"Current account type:\", accountType);\r",
+							"\r",
+							"// Debug: Check if permissions for the account type exist\r",
+							"if (!accountPermissions[accountType]) {\r",
+							"    console.error(`No permissions found for account type: ${accountType}`);\r",
+							"}\r",
+							"\r",
+							"// Send a request to get the token\r",
+							"pm.sendRequest({\r",
+							"    header: {\r",
+							"        \"Content-Type\": \"application/json\",\r",
+							"    },\r",
+							"    body: {\r",
+							"        mode: \"raw\",\r",
+							"        raw: JSON.stringify(pm.request.body),\r",
+							"    },\r",
+							"}, function (err, res) {\r",
+							"    if (err) {\r",
+							"        console.error(\"Error fetching token:\", err);\r",
+							"    } else {\r",
+							"        const token = res.json().token;\r",
+							"        pm.environment.set(\"bearerToken\", token);\r",
+							"    }\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Retrieve and parse accountPermissions from the environment variable\r",
+							"const accountPermissions = JSON.parse(pm.environment.get(\"accountPermissions\"));\r",
+							"\r",
+							"// Get the current account type and its expected permissions\r",
+							"const accountType = pm.environment.get(\"accountType\");\r",
+							"const permissions = accountPermissions[accountType];\r",
+							"\r",
+							"// pm.test(\"Response status code is 200\", function () {\r",
+							"//   pm.expect(pm.response.code).to.equal(200);\r",
+							"// });\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"// Validate the response based on permissions\r",
+							"if (permissions.canAccess) {\r",
+							"    pm.test(`[${accountType}] should have access`, function () {\r",
+							"        pm.response.to.have.status(200); // Adjust for your success status\r",
+							"    });\r",
+							"} else {\r",
+							"    pm.test(`[${accountType}] failed to gain access`, function () {\r",
+							"        pm.response.to.have.status(403); // Adjust for your failure status\r",
+							"    });\r",
+							"}\r",
+							"\r",
+							"// Debug log for account type and expected access\r",
+							"console.log(`Account type: ${accountType}, Expected access: ${permissions.canAccess}`);\r",
+							"\r",
+							"// Add an additional check for explicit behavior based on account type\r",
+							"if (accountType === \"booger\") {\r",
+							"    pm.test(`[${accountType}] should explicitly fail`, function () {\r",
+							"        pm.expect(pm.response.code).to.equal(403);\r",
+							"    });\r",
+							"} else {\r",
+							"    pm.test(`[${accountType}] should explicitly succeed`, function () {\r",
+							"        pm.expect(pm.response.code).to.equal(200);\r",
+							"    });\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5035/api/Assign1Query/c3_orders/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5035",
+					"path": [
+						"api",
+						"Assign1Query",
+						"c3_orders",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "c4_tripId",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Define or update accountPermissions\r",
+							"const accountPermissions = {\r",
+							"    admin: { canAccess: true },\r",
+							"    manager: { canAccess: true },\r",
+							"    cook: { canAccess: true },\r",
+							"    cyclist: { canAccess: true },\r",
+							"    NoRights: { canAccess: true },\r",
+							"};\r",
+							"\r",
+							"// Save the updated permissions to the environment variable\r",
+							"pm.environment.set(\"accountPermissions\", JSON.stringify(accountPermissions));\r",
+							"\r",
+							"// Get the current account type\r",
+							"const accountType = pm.environment.get(\"accountType\");\r",
+							"\r",
+							"// Debug: Log the updated permissions and account type\r",
+							"console.log(\"Updated accountPermissions:\", accountPermissions);\r",
+							"console.log(\"Current account type:\", accountType);\r",
+							"\r",
+							"// Debug: Check if permissions for the account type exist\r",
+							"if (!accountPermissions[accountType]) {\r",
+							"    console.error(`No permissions found for account type: ${accountType}`);\r",
+							"}\r",
+							"\r",
+							"// Send a request to get the token\r",
+							"pm.sendRequest({\r",
+							"    header: {\r",
+							"        \"Content-Type\": \"application/json\",\r",
+							"    },\r",
+							"    body: {\r",
+							"        mode: \"raw\",\r",
+							"        raw: JSON.stringify(pm.request.body),\r",
+							"    },\r",
+							"}, function (err, res) {\r",
+							"    if (err) {\r",
+							"        console.error(\"Error fetching token:\", err);\r",
+							"    } else {\r",
+							"        const token = res.json().token;\r",
+							"        pm.environment.set(\"bearerToken\", token);\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Retrieve and parse accountPermissions from the environment variable\r",
+							"const accountPermissions = JSON.parse(pm.environment.get(\"accountPermissions\"));\r",
+							"\r",
+							"// Get the current account type and its expected permissions\r",
+							"const accountType = pm.environment.get(\"accountType\");\r",
+							"const permissions = accountPermissions[accountType];\r",
+							"\r",
+							"// pm.test(\"Response status code is 200\", function () {\r",
+							"//   pm.expect(pm.response.code).to.equal(200);\r",
+							"// });\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"// Validate the response based on permissions\r",
+							"if (permissions.canAccess) {\r",
+							"    pm.test(`[${accountType}] should have access`, function () {\r",
+							"        pm.response.to.have.status(200); // Adjust for your success status\r",
+							"    });\r",
+							"} else {\r",
+							"    pm.test(`[${accountType}] failed to gain access`, function () {\r",
+							"        pm.response.to.have.status(403); // Adjust for your failure status\r",
+							"    });\r",
+							"}\r",
+							"\r",
+							"// Debug log for account type and expected access\r",
+							"console.log(`Account type: ${accountType}, Expected access: ${permissions.canAccess}`);\r",
+							"\r",
+							"// Add an additional check for explicit behavior based on account type\r",
+							"// if (accountType === \"cyclist\" || accountType === \"NoRights\") {\r",
+							"//     pm.test(`[${accountType}] should explicitly fail`, function () {\r",
+							"//         pm.expect(pm.response.code).to.equal(403);\r",
+							"//     });\r",
+							"// } else {\r",
+							"//     pm.test(`[${accountType}] should explicitly succeed`, function () {\r",
+							"//         pm.expect(pm.response.code).to.equal(200);\r",
+							"//     });\r",
+							"// }\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5035/api/Assign1Query/c4_trips/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5035",
+					"path": [
+						"api",
+						"Assign1Query",
+						"c4_trips",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "c5_cookratings",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Define permissions for each account type\r",
+							"const accountPermissions = {\r",
+							"    admin: { canAccess: true },\r",
+							"    manager: { canAccess: false },\r",
+							"    cook: { canAccess: false },\r",
+							"    cyclist: { canAccess: false },\r",
+							"    NoRights: { canAccess: false },\r",
+							"};\r",
+							"\r",
+							"// Save the updated permissions to the environment variable\r",
+							"pm.environment.set(\"accountPermissions\", JSON.stringify(accountPermissions));\r",
+							"\r",
+							"// Get the current account type\r",
+							"const accountType = pm.environment.get(\"accountType\");\r",
+							"\r",
+							"// Debug: Log the updated permissions and account type\r",
+							"console.log(\"Updated accountPermissions:\", accountPermissions);\r",
+							"console.log(\"Current account type:\", accountType);\r",
+							"\r",
+							"// Debug: Check if permissions for the account type exist\r",
+							"if (!accountPermissions[accountType]) {\r",
+							"    console.error(`No permissions found for account type: ${accountType}`);\r",
+							"}\r",
+							"\r",
+							"// Send a request to get the token\r",
+							"pm.sendRequest({\r",
+							"    header: {\r",
+							"        \"Content-Type\": \"application/json\",\r",
+							"    },\r",
+							"    body: {\r",
+							"        mode: \"raw\",\r",
+							"        raw: JSON.stringify(pm.request.body),\r",
+							"    },\r",
+							"}, function (err, res) {\r",
+							"    if (err) {\r",
+							"        console.error(\"Error fetching token:\", err);\r",
+							"    } else {\r",
+							"        const token = res.json().token;\r",
+							"        pm.environment.set(\"bearerToken\", token);\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Retrieve and parse accountPermissions from the environment variable\r",
+							"const accountPermissions = JSON.parse(pm.environment.get(\"accountPermissions\"));\r",
+							"\r",
+							"// Get the current account type and its expected permissions\r",
+							"const accountType = pm.environment.get(\"accountType\");\r",
+							"const permissions = accountPermissions[accountType];\r",
+							"\r",
+							"// test if query succeeds\r",
+							"// pm.test(\"Response status code is 200\", function () {\r",
+							"//   pm.expect(pm.response.code).to.equal(200);\r",
+							"// });\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"// Validate the response based on permissions\r",
+							"if (permissions.canAccess) {\r",
+							"    pm.test(`[${accountType}] should have access`, function () {\r",
+							"        pm.response.to.have.status(200); // Adjust for your success status\r",
+							"    });\r",
+							"} else {\r",
+							"    pm.test(`[${accountType}] failed to gain access`, function () {\r",
+							"        if (accountType === \"cyclist\" || accountType === \"NoRights\" || accountType === \"manager\") {\r",
+							"        pm.expect(pm.response.code).to.equal(403);\r",
+							"        } else if(accountType === \"cook\"){\r",
+							"            pm.expect(pm.response.code).to.equal(401);\r",
+							"        }\r",
+							"    });\r",
+							"}\r",
+							"\r",
+							"// Debug log for account type and expected access\r",
+							"console.log(`Account type: ${accountType}, Expected access: ${permissions.canAccess}`);\r",
+							"\r",
+							"// Add an additional check for explicit behavior based on account type\r",
+							"if (accountType === \"cyclist\" || accountType === \"NoRights\" || accountType === \"manager\") {\r",
+							"    pm.test(`[${accountType}] should explicitly fail`, function () {\r",
+							"        pm.expect(pm.response.code).to.equal(403);\r",
+							"    });\r",
+							"} \r",
+							"else if(accountType === \"cook\"){\r",
+							"    pm.test(`[${accountType}] should explicitly fail`, function () {\r",
+							"        pm.expect(pm.response.code).to.equal(401);\r",
+							"    });\r",
+							"} else {\r",
+							"    pm.test(`[${accountType}] should explicitly succeed`, function () {\r",
+							"        pm.expect(pm.response.code).to.equal(200);\r",
+							"    });\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5035/api/Assign1Query/c5_ratings/cook/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5035",
+					"path": [
+						"api",
+						"Assign1Query",
+						"c5_ratings",
+						"cook",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "c5_AllCylistsRating",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Retrieve and parse accountPermissions from the environment variable\r",
+							"const accountPermissions = JSON.parse(pm.environment.get(\"accountPermissions\"));\r",
+							"\r",
+							"// Get the current account type and its expected permissions\r",
+							"const accountType = pm.environment.get(\"accountType\");\r",
+							"const permissions = accountPermissions[accountType];\r",
+							"\r",
+							"// pm.test(\"Response status code is 200\", function () {\r",
+							"//   pm.expect(pm.response.code).to.equal(200);\r",
+							"// });\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"// Validate the response based on permissions\r",
+							"if (permissions.canAccess) {\r",
+							"    pm.test(`[${accountType}] should have access`, function () {\r",
+							"        pm.response.to.have.status(200); // Adjust for your success status\r",
+							"    });\r",
+							"} else {\r",
+							"    pm.test(`[${accountType}] failed to gain access`, function () {\r",
+							"        pm.response.to.have.status(403); // Adjust for your failure status\r",
+							"    });\r",
+							"}\r",
+							"\r",
+							"// Debug log for account type and expected access\r",
+							"console.log(`Account type: ${accountType}, Expected access: ${permissions.canAccess}`);\r",
+							"\r",
+							"// Add an additional check for explicit behavior based on account type\r",
+							"// if (accountType === \"cyclist\" || accountType === \"NoRights\") {\r",
+							"//     pm.test(`[${accountType}] should explicitly fail`, function () {\r",
+							"//         pm.expect(pm.response.code).to.equal(403);\r",
+							"//     });\r",
+							"// } else {\r",
+							"//     pm.test(`[${accountType}] should explicitly succeed`, function () {\r",
+							"//         pm.expect(pm.response.code).to.equal(200);\r",
+							"//     });\r",
+							"// }\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Define or update accountPermissions\r",
+							"const accountPermissions = {\r",
+							"    admin: { canAccess: true },\r",
+							"    manager: { canAccess: true },\r",
+							"    cook: { canAccess: true },\r",
+							"    cyclist: { canAccess: true },\r",
+							"    NoRights: { canAccess: true },\r",
+							"};\r",
+							"\r",
+							"// Save the updated permissions to the environment variable\r",
+							"pm.environment.set(\"accountPermissions\", JSON.stringify(accountPermissions));\r",
+							"\r",
+							"// Get the current account type\r",
+							"const accountType = pm.environment.get(\"accountType\");\r",
+							"\r",
+							"// Debug: Log the updated permissions and account type\r",
+							"console.log(\"Updated accountPermissions:\", accountPermissions);\r",
+							"console.log(\"Current account type:\", accountType);\r",
+							"\r",
+							"// Debug: Check if permissions for the account type exist\r",
+							"if (!accountPermissions[accountType]) {\r",
+							"    console.error(`No permissions found for account type: ${accountType}`);\r",
+							"}\r",
+							"\r",
+							"// Send a request to get the token\r",
+							"pm.sendRequest({\r",
+							"    header: {\r",
+							"        \"Content-Type\": \"application/json\",\r",
+							"    },\r",
+							"    body: {\r",
+							"        mode: \"raw\",\r",
+							"        raw: JSON.stringify(pm.request.body),\r",
+							"    },\r",
+							"}, function (err, res) {\r",
+							"    if (err) {\r",
+							"        console.error(\"Error fetching token:\", err);\r",
+							"    } else {\r",
+							"        const token = res.json().token;\r",
+							"        pm.environment.set(\"bearerToken\", token);\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5035/api/Assign1Query/c5_1_ratings/cyclists",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5035",
+					"path": [
+						"api",
+						"Assign1Query",
+						"c5_1_ratings",
+						"cyclists"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "c5_1CyclistRating",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Define or update accountPermissions\r",
+							"const accountPermissions = {\r",
+							"    admin: { canAccess: true },\r",
+							"    manager: { canAccess: true },\r",
+							"    cook: { canAccess: true },\r",
+							"    cyclist: { canAccess: true },\r",
+							"    NoRights: { canAccess: true },\r",
+							"};\r",
+							"\r",
+							"// Save the updated permissions to the environment variable\r",
+							"pm.environment.set(\"accountPermissions\", JSON.stringify(accountPermissions));\r",
+							"\r",
+							"// Get the current account type\r",
+							"const accountType = pm.environment.get(\"accountType\");\r",
+							"\r",
+							"// Debug: Log the updated permissions and account type\r",
+							"console.log(\"Updated accountPermissions:\", accountPermissions);\r",
+							"console.log(\"Current account type:\", accountType);\r",
+							"\r",
+							"// Debug: Check if permissions for the account type exist\r",
+							"if (!accountPermissions[accountType]) {\r",
+							"    console.error(`No permissions found for account type: ${accountType}`);\r",
+							"}\r",
+							"\r",
+							"// Send a request to get the token\r",
+							"pm.sendRequest({\r",
+							"    header: {\r",
+							"        \"Content-Type\": \"application/json\",\r",
+							"    },\r",
+							"    body: {\r",
+							"        mode: \"raw\",\r",
+							"        raw: JSON.stringify(pm.request.body),\r",
+							"    },\r",
+							"}, function (err, res) {\r",
+							"    if (err) {\r",
+							"        console.error(\"Error fetching token:\", err);\r",
+							"    } else {\r",
+							"        const token = res.json().token;\r",
+							"        pm.environment.set(\"bearerToken\", token);\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Retrieve and parse accountPermissions from the environment variable\r",
+							"const accountPermissions = JSON.parse(pm.environment.get(\"accountPermissions\"));\r",
+							"\r",
+							"// Get the current account type and its expected permissions\r",
+							"const accountType = pm.environment.get(\"accountType\");\r",
+							"const permissions = accountPermissions[accountType];\r",
+							"\r",
+							"// pm.test(\"Response status code is 200\", function () {\r",
+							"//   pm.expect(pm.response.code).to.equal(200);\r",
+							"// });\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"// Validate the response based on permissions\r",
+							"if (permissions.canAccess) {\r",
+							"    pm.test(`[${accountType}] should have access`, function () {\r",
+							"        pm.response.to.have.status(200); // Adjust for your success status\r",
+							"    });\r",
+							"} else {\r",
+							"    pm.test(`[${accountType}] failed to gain access`, function () {\r",
+							"        pm.response.to.have.status(403); // Adjust for your failure status\r",
+							"    });\r",
+							"}\r",
+							"\r",
+							"// Debug log for account type and expected access\r",
+							"console.log(`Account type: ${accountType}, Expected access: ${permissions.canAccess}`);\r",
+							"\r",
+							"// Add an additional check for explicit behavior based on account type\r",
+							"// if (accountType === \"cyclist\" || accountType === \"NoRights\") {\r",
+							"//     pm.test(`[${accountType}] should explicitly fail`, function () {\r",
+							"//         pm.expect(pm.response.code).to.equal(403);\r",
+							"//     });\r",
+							"// } else {\r",
+							"//     pm.test(`[${accountType}] should explicitly succeed`, function () {\r",
+							"//         pm.expect(pm.response.code).to.equal(200);\r",
+							"//     });\r",
+							"// }\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5035/api/Assign1Query/c5_2_ratings/cyclist/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5035",
+					"path": [
+						"api",
+						"Assign1Query",
+						"c5_2_ratings",
+						"cyclist",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "c6_cyclistEarnings",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Define permissions for each account type\r",
+							"const accountPermissions = {\r",
+							"    admin: { canAccess: true },\r",
+							"    manager: { canAccess: false },\r",
+							"    cook: { canAccess: false },\r",
+							"    cyclist: { canAccess: true },\r",
+							"    NoRights: { canAccess: false },\r",
+							"};\r",
+							"\r",
+							"// Save the updated permissions to the environment variable\r",
+							"pm.environment.set(\"accountPermissions\", JSON.stringify(accountPermissions));\r",
+							"\r",
+							"// Get the current account type\r",
+							"const accountType = pm.environment.get(\"accountType\");\r",
+							"\r",
+							"// Debug: Log the updated permissions and account type\r",
+							"console.log(\"Updated accountPermissions:\", accountPermissions);\r",
+							"console.log(\"Current account type:\", accountType);\r",
+							"\r",
+							"// Debug: Check if permissions for the account type exist\r",
+							"if (!accountPermissions[accountType]) {\r",
+							"    console.error(`No permissions found for account type: ${accountType}`);\r",
+							"}\r",
+							"\r",
+							"// Send a request to get the token\r",
+							"pm.sendRequest({\r",
+							"    header: {\r",
+							"        \"Content-Type\": \"application/json\",\r",
+							"    },\r",
+							"    body: {\r",
+							"        mode: \"raw\",\r",
+							"        raw: JSON.stringify(pm.request.body),\r",
+							"    },\r",
+							"}, function (err, res) {\r",
+							"    if (err) {\r",
+							"        console.error(\"Error fetching token:\", err);\r",
+							"    } else {\r",
+							"        const token = res.json().token;\r",
+							"        pm.environment.set(\"bearerToken\", token);\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Retrieve and parse accountPermissions from the environment variable\r",
+							"const accountPermissions = JSON.parse(pm.environment.get(\"accountPermissions\"));\r",
+							"\r",
+							"// Get the current account type and its expected permissions\r",
+							"const accountType = pm.environment.get(\"accountType\");\r",
+							"const permissions = accountPermissions[accountType];\r",
+							"\r",
+							"// pm.test(\"Response status code is 200\", function () {\r",
+							"//   pm.expect(pm.response.code).to.equal(200);\r",
+							"// });\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"// Validate the response based on permissions\r",
+							"if (permissions.canAccess) {\r",
+							"    pm.test(`[${accountType}] should have access`, function () {\r",
+							"        pm.response.to.have.status(200); // Adjust for your success status\r",
+							"    });\r",
+							"} else {\r",
+							"    pm.test(`[${accountType}] failed to gain access`, function () {\r",
+							"        pm.response.to.have.status(403); // Adjust for your failure status\r",
+							"    });\r",
+							"}\r",
+							"\r",
+							"// Debug log for account type and expected access\r",
+							"console.log(`Account type: ${accountType}, Expected access: ${permissions.canAccess}`);\r",
+							"\r",
+							"// Add an additional check for explicit behavior based on account type\r",
+							"if (accountType === \"manager\" || accountType === \"NoRights\" || accountType === \"cook\") {\r",
+							"    pm.test(`[${accountType}] should explicitly fail`, function () {\r",
+							"        pm.expect(pm.response.code).to.equal(403);\r",
+							"    });\r",
+							"} else {\r",
+							"    pm.test(`[${accountType}] should explicitly succeed`, function () {\r",
+							"        pm.expect(pm.response.code).to.equal(200);\r",
+							"    });\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5035/api/Assign1Query/c6_cyclist/1/earnings",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5035",
+					"path": [
+						"api",
+						"Assign1Query",
+						"c6_cyclist",
+						"1",
+						"earnings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "c7_cyclistsData",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Define permissions for each account type\r",
+							"const accountPermissions = {\r",
+							"    admin: { canAccess: true },\r",
+							"    manager: { canAccess: true },\r",
+							"    cook: { canAccess: false },\r",
+							"    cyclist: { canAccess: false },\r",
+							"    NoRights: { canAccess: false },\r",
+							"};\r",
+							"\r",
+							"// Save the updated permissions to the environment variable\r",
+							"pm.environment.set(\"accountPermissions\", JSON.stringify(accountPermissions));\r",
+							"\r",
+							"// Get the current account type\r",
+							"const accountType = pm.environment.get(\"accountType\");\r",
+							"\r",
+							"// Debug: Log the updated permissions and account type\r",
+							"console.log(\"Updated accountPermissions:\", accountPermissions);\r",
+							"console.log(\"Current account type:\", accountType);\r",
+							"\r",
+							"// Debug: Check if permissions for the account type exist\r",
+							"if (!accountPermissions[accountType]) {\r",
+							"    console.error(`No permissions found for account type: ${accountType}`);\r",
+							"}\r",
+							"\r",
+							"// Send a request to get the token\r",
+							"pm.sendRequest({\r",
+							"    header: {\r",
+							"        \"Content-Type\": \"application/json\",\r",
+							"    },\r",
+							"    body: {\r",
+							"        mode: \"raw\",\r",
+							"        raw: JSON.stringify(pm.request.body),\r",
+							"    },\r",
+							"}, function (err, res) {\r",
+							"    if (err) {\r",
+							"        console.error(\"Error fetching token:\", err);\r",
+							"    } else {\r",
+							"        const token = res.json().token;\r",
+							"        pm.environment.set(\"bearerToken\", token);\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Retrieve and parse accountPermissions from the environment variable\r",
+							"const accountPermissions = JSON.parse(pm.environment.get(\"accountPermissions\"));\r",
+							"\r",
+							"// Get the current account type and its expected permissions\r",
+							"const accountType = pm.environment.get(\"accountType\");\r",
+							"const permissions = accountPermissions[accountType];\r",
+							"\r",
+							"// pm.test(\"Response status code is 200\", function () {\r",
+							"//   pm.expect(pm.response.code).to.equal(200);\r",
+							"// });\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"// Validate the response based on permissions\r",
+							"if (permissions.canAccess) {\r",
+							"    pm.test(`[${accountType}] should have access`, function () {\r",
+							"        pm.response.to.have.status(200); // Adjust for your success status\r",
+							"    });\r",
+							"} else {\r",
+							"    pm.test(`[${accountType}] failed to gain access`, function () {\r",
+							"        pm.response.to.have.status(403); // Adjust for your failure status\r",
+							"    });\r",
+							"}\r",
+							"\r",
+							"// Debug log for account type and expected access\r",
+							"console.log(`Account type: ${accountType}, Expected access: ${permissions.canAccess}`);\r",
+							"\r",
+							"// Add an additional check for explicit behavior based on account type\r",
+							"if (accountType === \"cyclist\" || accountType === \"NoRights\" || accountType === \"cook\") {\r",
+							"    pm.test(`[${accountType}] should explicitly fail`, function () {\r",
+							"        pm.expect(pm.response.code).to.equal(403);\r",
+							"    });\r",
+							"} else {\r",
+							"    pm.test(`[${accountType}] should explicitly succeed`, function () {\r",
+							"        pm.expect(pm.response.code).to.equal(200);\r",
+							"    });\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5035/api/Assign1Query/c7_cyclists/data",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5035",
+					"path": [
+						"api",
+						"Assign1Query",
+						"c7_cyclists",
+						"data"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
