@@ -22,7 +22,7 @@ namespace FoodAppG4.Services
         /// Searches logs based on user, operation, and time interval.
         /// </summary>
         /// <param name="user">Username to filter logs by user.</param>
-        /// <param name="operation">Operation type to filter (e.g., CreateCook).</param>
+        /// <param name="operation">Operation type to filter (e.g., GET).</param>
         /// <param name="startDate">Start of the time interval.</param>
         /// <param name="endDate">End of the time interval.</param>
         /// <returns>List of filtered LogEntry objects.</returns>
