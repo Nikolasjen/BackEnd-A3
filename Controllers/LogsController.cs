@@ -2,9 +2,6 @@ using FoodAppG4.LoggingLevels;
 using FoodAppG4.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace FoodAppG4.Controllers
 {

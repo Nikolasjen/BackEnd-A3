@@ -28,10 +28,10 @@ public partial class FoodAppG4Context : IdentityDbContext<ApiUser>
     public virtual DbSet<Salary> Salaries { get; set; }
     public virtual DbSet<Trip> Trips { get; set; }
     public virtual DbSet<TripStop> TripStops { get; set; }
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseSqlServer("Data Source=127.0.0.1,1433;Database=FoodApp_G4;User Id=sa;Password=G4_BadPassword;TrustServerCertificate=True");
-    }
+    // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    // {
+    //     // optionsBuilder.UseSqlServer("Data Source=127.0.0.1,1433;Database=FoodApp_G4;User Id=sa;Password=G4_BadPassword;TrustServerCertificate=True");
+    // }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

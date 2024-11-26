@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: FoodAppLogs
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: sqlserver
+    restart: unless-stopped
+    environment:
+      SA_PASSWORD: "G4_BadPassword"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Express" # Choose "Express" or another edition
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+
+  webapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: foodapp_g4
+    restart: unless-stopped
+    depends_on:
+      - mongo
+      - sqlserver
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "http://+:80"
+      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=FoodApp_G4;User Id=sa;Password=G4_BadPassword;TrustServerCertificate=True;"
+      ConnectionStrings__MongoDB: "mongodb://mongo:27017"
+      JWT__Issuer: "FoodApp_G4"
+      JWT__Audience: "FoodApp_G4"
+      JWT__SigningKey: "MyVeryOwnTestSigningKey123123412345$"
+    ports:
+      - "5000:80"
+
+volumes:
+  mongo-data:
+  sqlserver-data:

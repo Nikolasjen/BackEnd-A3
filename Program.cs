@@ -140,6 +140,13 @@ public class Program
                 });
             });
 
+
+            // Ensure the app listens on all network interfaces
+            builder.WebHost.ConfigureKestrel(options =>
+            {
+                options.ListenAnyIP(80); // Listen on port 80 on all network interfaces
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -153,7 +160,14 @@ public class Program
 
             using (var scope = app.Services.CreateScope())
             {
+                // Get the service provider
                 var serviceProvider = scope.ServiceProvider;
+
+                // Apply migrations at startup
+                var dbContext = serviceProvider.GetRequiredService<FoodAppG4Context>();
+                dbContext.Database.Migrate();
+
+                // Seed the database with users
                 var userManager = serviceProvider.GetService<UserManager<ApiUser>>();
                 if (userManager != null)
                 {
