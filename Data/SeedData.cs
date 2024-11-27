@@ -9,11 +9,7 @@ namespace FoodAppG4.Data
 {
     public static class SeedData
     {
-        /// <summary>
-        /// Asynchronously seeds users into the database. If a user already exists, it is removed before being re-created.
-        /// </summary>
-        /// <param name="userManager">The UserManager instance for managing users.</param>
-        /// <returns>A Task representing the asynchronous operation.</returns>
+
         public static async Task SeedUsersAsync(UserManager<ApiUser> userManager)
         {
             if (userManager == null)

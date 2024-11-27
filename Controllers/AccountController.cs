@@ -49,7 +49,6 @@ public class AccountController : ControllerBase
             newUser.UserName = input.Email;
             newUser.Email = input.Email;
             newUser.FullName = input.FullName;
-            // TODO: Add the user id's - no, this is done manually by the admin in sql! 
             var result = await _userManager.CreateAsync(newUser, input.Password);
             if (result.Succeeded)
             {

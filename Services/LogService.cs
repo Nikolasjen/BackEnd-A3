@@ -18,14 +18,6 @@ namespace FoodAppG4.Services
             _logsCollection = database.GetCollection<LogEntry>("log");
         }
 
-        /// <summary>
-        /// Searches logs based on user, operation, and time interval.
-        /// </summary>
-        /// <param name="user">Username to filter logs by user.</param>
-        /// <param name="operation">Operation type to filter (e.g., GET).</param>
-        /// <param name="startDate">Start of the time interval.</param>
-        /// <param name="endDate">End of the time interval.</param>
-        /// <returns>List of filtered LogEntry objects.</returns>
         public async Task<List<LogEntry>> SearchLogsAsync(
             string? user,
             string? operation,
@@ -64,7 +56,7 @@ namespace FoodAppG4.Services
             // Combine all filters
             var combinedFilter = filters.Count > 0 ? filterBuilder.And(filters) : filterBuilder.Empty;
 
-            // Optional: Define a maximum limit to prevent excessively large responses
+            // Define a maximum limit to prevent excessively large responses
             const int maxLogs = 1000;
 
             // Execute the query with sorting and limit

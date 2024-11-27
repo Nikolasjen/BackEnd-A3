@@ -183,14 +183,10 @@ public class Program
         catch (Exception ex)
         {
             Console.WriteLine("An error occurred: {0}", ex.Message);
-            // Optionally log the exception using Serilog
-            // Log.Fatal(ex, "Application startup failed");
         }
         finally
         {
             Console.WriteLine("Application shutting down...");
-            // Optionally close and flush Serilog
-            // Log.CloseAndFlush();
         }
     }
 }

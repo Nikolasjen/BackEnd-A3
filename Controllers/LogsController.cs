@@ -19,15 +19,6 @@ namespace FoodAppG4.Controllers
             _logger = logger;
         }
 
-        /// <summary>
-        /// Advanced search endpoint to filter logs by user, operation, and time interval.
-        /// Accessible only by Admin users.
-        /// </summary>
-        /// <param name="user">Username to filter logs by user.</param>
-        /// <param name="operation">Operation type to filter (e.g., CreateCook).</param>
-        /// <param name="startDate">Start of the time interval.</param>
-        /// <param name="endDate">End of the time interval.</param>
-        /// <returns>Filtered list of LogEntry objects.</returns>
         [HttpGet("advanced-search")]
         public async Task<ActionResult<List<LogEntry>>> AdvancedSearch(
             [FromQuery] string? user,

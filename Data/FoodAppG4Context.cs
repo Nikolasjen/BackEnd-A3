@@ -9,9 +9,7 @@ namespace FoodAppG4.Data;
 
 public partial class FoodAppG4Context : IdentityDbContext<ApiUser>
 {
-    // public FoodAppG4Context()
-    // {
-    // }
+
 
     public FoodAppG4Context(DbContextOptions<FoodAppG4Context> options)
         : base(options)
@@ -28,10 +26,6 @@ public partial class FoodAppG4Context : IdentityDbContext<ApiUser>
     public virtual DbSet<Salary> Salaries { get; set; }
     public virtual DbSet<Trip> Trips { get; set; }
     public virtual DbSet<TripStop> TripStops { get; set; }
-    // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    // {
-    //     // optionsBuilder.UseSqlServer("Data Source=127.0.0.1,1433;Database=FoodApp_G4;User Id=sa;Password=G4_BadPassword;TrustServerCertificate=True");
-    // }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -98,16 +92,6 @@ public partial class FoodAppG4Context : IdentityDbContext<ApiUser>
             new Rating { RatingId = 3, CookId = 2, CustomerId = 1, CyclistId = 1, DeliveryScore = 3, FoodScore = 3 }
         );
 
-        // modelBuilder.Entity<ApiUser>(entity =>
-        // {
-        //     entity.HasNoKey();
-
-        //     entity.Property(e => e.FullName)
-        //         .HasMaxLength(100)
-        //         .IsUnicode(false);
-
-        //     entity.ToTable("ApiUser");
-        // });
 
         modelBuilder.Entity<Cook>(entity =>
         {
@@ -316,8 +300,8 @@ public partial class FoodAppG4Context : IdentityDbContext<ApiUser>
                 .HasConstraintName("FK__TripStops__TripI__25518C17");
         });
 
-        // OnModelCreatingPartial(modelBuilder);
+
     }
 
-    // partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
 }
